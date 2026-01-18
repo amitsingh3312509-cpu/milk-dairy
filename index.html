@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Worker Salary Management</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worker Salary System</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-body{font-family:Arial;background:#f2f2f2;margin:0}
-.container{max-width:900px;margin:auto;padding:20px}
-.box{background:#fff;padding:20px;border-radius:10px;box-shadow:0 0 10px #ccc}
-input,button{padding:10px;margin:5px;width:100%}
-button{background:#007bff;color:white;border:none;border-radius:5px}
-table{width:100%;border-collapse:collapse;margin-top:10px}
+body{font-family:Arial;background:#eef;margin:0}
+.container{max-width:1100px;margin:auto;padding:20px}
+.box{background:#fff;padding:20px;border-radius:10px;box-shadow:0 0 10px #aaa;margin-bottom:20px}
+input,button,select{padding:10px;margin:5px;width:100%}
+button{background:#007bff;color:#fff;border:none;border-radius:5px;cursor:pointer}
+table{width:100%;border-collapse:collapse}
 th,td{border:1px solid #ccc;padding:8px;text-align:center}
 th{background:#007bff;color:#fff}
 .hidden{display:none}
+@media print {.noprint{display:none}}
 </style>
 </head>
 
@@ -22,87 +23,162 @@ th{background:#007bff;color:#fff}
 
 <!-- LOGIN -->
 <div id="loginBox" class="box">
-<h2>Admin Login</h2>
+<h2>Login</h2>
+<select id="role">
+<option value="admin">Admin</option>
+<option value="worker">Worker</option>
+</select>
 <input id="user" placeholder="Username">
 <input id="pass" type="password" placeholder="Password">
 <button onclick="login()">Login</button>
-<p id="loginMsg" style="color:red"></p>
+<p id="msg" style="color:red"></p>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard" class="box hidden">
-<h2>Worker Salary Management</h2>
+<!-- ADMIN -->
+<div id="admin" class="box hidden">
+<h2>Admin Dashboard</h2>
 
-<input id="search" placeholder="Search Worker Name" onkeyup="searchWorker()">
+<input id="search" placeholder="Search Worker" onkeyup="searchWorker()">
 
-<h3>Add Worker</h3>
+<h3>Add / Update Worker</h3>
 <input id="wname" placeholder="Worker Name">
 <input id="salary" type="number" placeholder="Salary">
-<input id="payment" placeholder="Payment Type (Cash / Online)">
-<button onclick="addWorker()">Add Worker</button>
+<select id="payment">
+<option>Cash</option>
+<option>Online</option>
+</select>
+<input id="month" placeholder="Month (Jan 2026)">
+<button onclick="addWorker()">Save</button>
 
 <table>
 <thead>
-<tr>
-<th>Name</th><th>Salary</th><th>Payment</th><th>Action</th>
-</tr>
+<tr><th>Name</th><th>Salary</th><th>Payment</th><th>Month</th><th>Action</th></tr>
 </thead>
-<tbody id="workerList"></tbody>
+<tbody id="list"></tbody>
 </table>
 
+<h3>Total Salary: ₹ <span id="total">0</span></h3>
+
+<button onclick="changePassword()" class="noprint">Change Admin Password</button>
+<button onclick="logout()" class="noprint">Logout</button>
+</div>
+
+<!-- WORKER -->
+<div id="worker" class="box hidden">
+<h2>My Salary</h2>
+<table>
+<thead>
+<tr><th>Name</th><th>Salary</th><th>Payment</th><th>Month</th></tr>
+</thead>
+<tbody id="myData"></tbody>
+</table>
+<button onclick="window.print()">Print Salary Slip</button>
+<button onclick="changePassword()">Change Password</button>
 <button onclick="logout()">Logout</button>
 </div>
 
 </div>
 
 <script>
-let workers=[];
+let workers=JSON.parse(localStorage.getItem("workers"))||[];
+let adminPass=localStorage.getItem("adminPass")||"28052005";
+let workerPass=localStorage.getItem("workerPass")||"1234";
+let currentUser="",currentRole="";
 
 function login(){
-let u=document.getElementById("user").value.trim().toLowerCase();
-let p=document.getElementById("pass").value.trim();
-if(u==="amit kumar singh" && p==="28052005"){
-document.getElementById("loginBox").classList.add("hidden");
-document.getElementById("dashboard").classList.remove("hidden");
-}else{
-document.getElementById("loginMsg").innerText="Username या Password गलत है";
+let r=role.value;
+let u=user.value.trim().toLowerCase();
+let p=pass.value.trim();
+
+if(r==="admin" && u==="amit kumar singh" && p===adminPass){
+currentRole="admin";
+loginBox.classList.add("hidden");
+admin.classList.remove("hidden");
+showAdmin();
 }
+else if(r==="worker" && p===workerPass){
+currentRole="worker";
+currentUser=u;
+loginBox.classList.add("hidden");
+worker.classList.remove("hidden");
+showWorker();
+}
+else msg.innerText="Login गलत है";
 }
 
 function addWorker(){
-let name=wname.value;
-let sal=salary.value;
-let pay=payment.value;
-if(name==="")return;
-workers.push({name,sal,pay});
-display();
-wname.value=salary.value=payment.value="";
+workers.push({
+name:wname.value,
+salary:Number(salary.value),
+payment:payment.value,
+month:month.value
+});
+save();
+wname.value=salary.value=month.value="";
 }
 
-function display(){
-let html="";
+function showAdmin(){
+let html="",t=0;
 workers.forEach((w,i)=>{
+t+=w.salary;
 html+=`<tr>
 <td>${w.name}</td>
-<td>${w.sal}</td>
-<td>${w.pay}</td>
-<td><button onclick="workers.splice(${i},1);display()">Delete</button></td>
+<td>₹${w.salary}</td>
+<td>${w.payment}</td>
+<td>${w.month}</td>
+<td><button onclick="del(${i})">Delete</button></td>
 </tr>`;
 });
-workerList.innerHTML=html;
+list.innerHTML=html;
+total.innerText=t;
+}
+
+function showWorker(){
+let html="";
+workers.filter(w=>w.name.toLowerCase()===currentUser)
+.forEach(w=>{
+html+=`<tr>
+<td>${w.name}</td>
+<td>₹${w.salary}</td>
+<td>${w.payment}</td>
+<td>${w.month}</td>
+</tr>`;
+});
+myData.innerHTML=html;
+}
+
+function del(i){
+workers.splice(i,1);
+save();
+}
+
+function save(){
+localStorage.setItem("workers",JSON.stringify(workers));
+showAdmin();
 }
 
 function searchWorker(){
 let s=search.value.toLowerCase();
-document.querySelectorAll("#workerList tr").forEach(r=>{
+document.querySelectorAll("#list tr").forEach(r=>{
 r.style.display=r.innerText.toLowerCase().includes(s)?"":"none";
 });
 }
 
-function logout(){
-location.reload();
+function changePassword(){
+let np=prompt("Enter new password");
+if(!np) return;
+if(currentRole==="admin"){
+adminPass=np;
+localStorage.setItem("adminPass",np);
+alert("Admin password changed");
+}else{
+workerPass=np;
+localStorage.setItem("workerPass",np);
+alert("Worker password changed");
 }
-</script>
+}
 
+function logout(){location.reload();}
+</script>
 </body>
   </html>
