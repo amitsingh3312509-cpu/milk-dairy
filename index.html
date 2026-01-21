@@ -2,149 +2,151 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Dictionary App with Hindi & Voice</title>
+<title>All-in-One Learning App</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body{
-    font-family: Arial;
-    background:#020617;
-    color:white;
-    text-align:center;
-    padding:20px;
+  font-family: Arial;
+  background:#020617;
+  color:white;
+  text-align:center;
+  padding:20px;
 }
 .box{
-    background:#0f172a;
-    padding:20px;
-    border-radius:12px;
-    max-width:450px;
-    margin:auto;
+  background:#0f172a;
+  padding:20px;
+  border-radius:12px;
+  max-width:600px;
+  margin:auto;
 }
-input{
-    width:90%;
-    padding:12px;
-    font-size:16px;
-    margin:8px 0;
-    border-radius:8px;
-    border:none;
+input, textarea{
+  width:95%;
+  padding:12px;
+  font-size:16px;
+  margin:8px 0;
+  border-radius:8px;
+  border:none;
 }
 button{
-    padding:10px 20px;
-    font-size:15px;
-    border-radius:8px;
-    border:none;
-    background:#22c55e;
-    cursor:pointer;
-    margin:5px;
+  padding:10px 22px;
+  font-size:16px;
+  border-radius:8px;
+  border:none;
+  background:#22c55e;
+  cursor:pointer;
+  margin:5px;
 }
-#logout{
-    background:#ef4444;
-    color:white;
-}
-#result{
-    margin-top:15px;
-    text-align:left;
-}
+#logout{background:#ef4444;}
+#result{margin-top:15px;text-align:left;white-space:pre-wrap;}
 </style>
 </head>
-
 <body>
 
 <!-- LOGIN -->
 <div class="box" id="loginBox">
-    <h2>🔐 Login</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <br>
-    <button onclick="login()">Login</button>
-    <p id="loginMsg"></p>
+  <h2>🔐 Login</h2>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <br>
+  <button onclick="login()">Login</button>
+  <p id="loginMsg"></p>
 </div>
 
 <!-- APP -->
 <div class="box" id="appBox" style="display:none;">
-    <h2>📘 Dictionary App</h2>
+  <h2>📘 Dictionary & 🤖 ChatGPT</h2>
+  
+  <input type="text" id="word" placeholder="Enter English word for meaning">
+  <button onclick="searchMeaning()">Search Meaning</button><br>
 
-    <input type="text" id="word" placeholder="Enter English word">
-    <br>
-    <button onclick="searchMeaning()">Search</button>
-    <button onclick="speakMeaning()">🔊 Voice</button>
-    <button id="logout" onclick="logout()">Logout</button>
+  <textarea id="question" placeholder="Type question for ChatGPT"></textarea><br>
+  <button onclick="askChatGPT()">Ask ChatGPT</button>
+  <button onclick="speakAnswer()">🔊 Voice</button>
+  <button id="logout" onclick="logout()">Logout</button>
 
-    <div id="result"></div>
+  <div id="result"></div>
 </div>
 
 <script>
-// AUTO LOGIN
-if(localStorage.getItem("loggedIn")==="yes"){
-    showApp();
-}
+// ---------------- LOGIN ----------------
+if(localStorage.getItem("loggedIn")==="yes"){showApp();}
 
 function login(){
-    let u=document.getElementById("username").value;
-    let p=document.getElementById("password").value;
-    if(u==="Meera Singh" && p==="7309277213"){
-        localStorage.setItem("loggedIn","yes");
-        showApp();
-    }else{
-        document.getElementById("loginMsg").innerText="❌ Wrong details";
-    }
+  let u=document.getElementById("username").value;
+  let p=document.getElementById("password").value;
+  if(u==="Meera Singh" && p==="7309277213"){
+    localStorage.setItem("loggedIn","yes");
+    showApp();
+  } else {
+    document.getElementById("loginMsg").innerText="❌ Wrong details";
+  }
 }
+function showApp(){loginBox.style.display="none"; appBox.style.display="block";}
+function logout(){localStorage.removeItem("loggedIn"); location.reload();}
 
-function showApp(){
-    loginBox.style.display="none";
-    appBox.style.display="block";
-}
-
-function logout(){
-    localStorage.removeItem("loggedIn");
-    location.reload();
-}
-
+// ---------------- DICTIONARY ----------------
 let speakText="";
-
 function searchMeaning(){
-    let word=document.getElementById("word").value;
-    let result=document.getElementById("result");
-
-    if(word.trim()==""){
-        alert("Enter a word");
-        return;
-    }
-
-    result.innerHTML="Searching...";
-
-    // English meaning
-    fetch("https://api.dictionaryapi.dev/api/v2/entries/en/"+word)
+  let word=document.getElementById("word").value.trim();
+  let result=document.getElementById("result");
+  if(word===""){alert("Enter a word"); return;}
+  result.innerHTML="Searching...";
+  
+  fetch("https://api.dictionaryapi.dev/api/v2/entries/en/"+word)
+  .then(res=>{
+    if(!res.ok) throw new Error("Not found");
+    return res.json();
+  })
+  .then(data=>{
+    if(!data || !data[0]){result.innerHTML="❌ Word not found"; return;}
+    let eng=data[0].meanings[0].definitions[0].definition;
+    fetch("https://api.mymemory.translated.net/get?q="+encodeURIComponent(eng)+"&langpair=en|hi")
     .then(res=>res.json())
-    .then(data=>{
-        let eng=data[0].meanings[0].definitions[0].definition;
-
-        // Hindi meaning
-        fetch("https://api.mymemory.translated.net/get?q="+eng+"&langpair=en|hi")
-        .then(res=>res.json())
-        .then(hindi=>{
-            let hi=hindi.responseData.translatedText;
-
-            speakText="English meaning: "+eng+". Hindi meaning: "+hi;
-
-            result.innerHTML=`
-            <b>English Meaning:</b><br>${eng}<br><br>
-            <b>Hindi Meaning:</b><br>${hi}
-            `;
-        });
-    })
-    .catch(()=>{
-        result.innerHTML="❌ Word not found";
+    .then(hindi=>{
+      let hi=hindi.responseData.translatedText;
+      speakText="English meaning: "+eng+". Hindi meaning: "+hi;
+      result.innerHTML=`<b>English Meaning:</b><br>${eng}<br><br><b>Hindi Meaning:</b><br>${hi}`;
     });
+  })
+  .catch(()=>{result.innerHTML="❌ Word not found or internet issue";});
 }
 
-function speakMeaning(){
-    if(speakText==""){
-        alert("Search a word first");
-        return;
-    }
-    let msg=new SpeechSynthesisUtterance(speakText);
-    msg.lang="en-IN";
-    speechSynthesis.speak(msg);
+// ---------------- CHATGPT ----------------
+const API_KEY = "PASTE_YOUR_OPENAI_API_KEY_HERE";
+
+async function askChatGPT(){
+  const q=document.getElementById("question").value.trim();
+  const result=document.getElementById("result");
+  if(q===""){alert("Type a question"); return;}
+  result.innerHTML="Thinking...";
+  
+  try{
+    const res=await fetch("https://api.openai.com/v1/chat/completions",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer "+API_KEY
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages:[{role:"user", content:q}]
+      })
+    });
+    const data=await res.json();
+    let ans=data.choices[0].message.content;
+    result.innerHTML=ans;
+    speakText=ans;
+  }catch(err){
+    result.innerHTML="❌ Error connecting to ChatGPT";
+  }
+}
+
+// ---------------- VOICE ----------------
+function speakAnswer(){
+  if(speakText===""){alert("Search word or ask question first"); return;}
+  let msg=new SpeechSynthesisUtterance(speakText);
+  msg.lang="en-IN";
+  speechSynthesis.speak(msg);
 }
 </script>
 
