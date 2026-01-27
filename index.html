@@ -1,135 +1,158 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Class 12 PCM Mock Test</title>
+<title>Shivam Milk Dairy Login</title>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
 <style>
-body{font-family:Arial;background:#eef;padding:20px}
-.box{background:#fff;padding:20px;border-radius:8px;max-width:900px;margin:auto}
-.hidden{display:none}
-.question{margin:15px 0;padding:10px;border:1px solid #ccc;border-radius:5px}
-.options label{display:block;margin-left:10px;cursor:pointer}
-button{padding:8px 15px;margin:10px 5px}
-.timer{font-weight:bold;margin-bottom:15px}
+body{margin:0;font-family:Arial;background:#f2f2f2}
+
+/* Login */
+#loginBox{
+  height:100vh;display:flex;justify-content:center;align-items:center;
+}
+.login{
+  background:#fff;padding:20px;width:300px;
+  box-shadow:0 0 10px #aaa
+}
+input,select{width:100%;padding:6px;margin-bottom:8px}
+button{width:100%;padding:8px;background:green;color:white;border:none}
+
+/* Splash */
+#splash{
+  display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+  background:#1b5e20;color:white;align-items:center;overflow:hidden
+}
+.train-text{
+  white-space:nowrap;font-size:28px;font-weight:bold;
+  animation:train 8s linear infinite;
+}
+@keyframes train{
+  0%{transform:translateX(100%)}
+  100%{transform:translateX(-100%)}
+}
+
+/* Form */
+#mainForm{
+  display:none;background:#fff;padding:15px;
+  width:95%;max-width:1000px;margin:20px auto
+}
+table{width:100%;border-collapse:collapse;margin-top:15px}
+th,td{border:1px solid #000;padding:5px;text-align:center}
 </style>
 </head>
 
 <body>
 
 <!-- LOGIN -->
-<div id="loginBox" class="box">
-<h2>Login</h2>
-<input id="user" placeholder="Username"><br><br>
-<input id="pass" type="password" placeholder="Password"><br><br>
-<button onclick="login()">Login</button>
-<p id="loginMsg" style="color:red"></p>
+<div id="loginBox">
+  <div class="login">
+    <h3 align="center">Login</h3>
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="msg" style="color:red;text-align:center"></p>
+  </div>
 </div>
 
-<!-- START -->
-<div id="startBox" class="box hidden">
-<h2>Welcome to PCM Mock Test</h2>
-<button onclick="startTest()">Start Test</button>
+<!-- SPLASH -->
+<div id="splash">
+  <div class="train-text">
+    🚆 Welcome to the Shivam Milk Dairy Product – For Everyone 🚆
+  </div>
 </div>
 
-<!-- TEST -->
-<div id="testBox" class="box hidden">
-<div class="timer">Time Left: <span id="time">5400</span> sec</div>
-<div id="quiz"></div>
-<button onclick="submitTest()">Submit Test</button>
-<button onclick="downloadAnswer()">Answer Key PDF</button>
-</div>
+<!-- FORM -->
+<div id="mainForm">
+<h2 align="center">Milk Dairy Entry Form</h2>
 
-<!-- RESULT -->
-<div id="resultBox" class="box hidden">
-<h2>Result</h2>
-<p id="resultText"></p>
+<input type="date" id="date">
+<input id="time" readonly>
+
+<input placeholder="Village Name" id="village">
+<input placeholder="Doodh Dene Wale ka Naam" id="giver">
+<input placeholder="Doodh Lene Wale ka Naam" id="receiver">
+<input placeholder="Mobile Number" id="mobile">
+
+<select id="type">
+<option>Cow Milk</option>
+<option>Buffalo Milk</option>
+</select>
+
+<input type="number" step="0.1" placeholder="Quantity (Liter)" id="qty">
+<input type="number" placeholder="Rate ₹/Liter" id="rate">
+
+<input placeholder="Signature – Doodh Dene Wala" id="signGiver">
+<input placeholder="Signature – Doodh Lene Wala" id="signReceiver">
+
+<button onclick="saveData()">Save Entry</button>
+<button onclick="downloadPDF()">📄 Download PDF</button>
+
+<table id="dataTable">
+<thead>
+<tr>
+<th>Date</th><th>Time</th><th>Village</th>
+<th>Doodh Diya</th><th>Doodh Liya</th>
+<th>Mobile</th><th>Milk</th>
+<th>Qty</th><th>Rate</th><th>Total</th>
+<th>Sign Diya</th><th>Sign Liya</th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
 </div>
 
 <script>
-/* LOGIN */
+// LOGIN CHECK
 function login(){
-  let u=document.getElementById("user").value;
-  let p=document.getElementById("pass").value;
-  if(u==="Meera Singh" && p==="255225"){
-    loginBox.classList.add("hidden");
-    startBox.classList.remove("hidden");
+  if(user.value==="Shivam Yadav" && pass.value==="277210"){
+    loginBox.style.display="none";
+    splash.style.display="flex";
+    setTimeout(()=>{
+      splash.style.display="none";
+      mainForm.style.display="block";
+    },5000);
   }else{
-    loginMsg.innerText="गलत Username या Password";
+    msg.innerText="Wrong Username or Password";
   }
 }
 
-/* QUESTIONS (SAMPLE SHOWN – इसी pattern पर 75 हैं) */
-const questions=[
-/* PHYSICS */
-{q:"कूलॉम का नियम किस पर लागू होता है?",o:["स्थिर बिंदु आवेश","धारा","चुंबक","तरंग"],a:0},
-{q:"ओम का नियम क्या है?",o:["V = IR","P = VI","F = ma","E = mc²"],a:0},
+// time
+setInterval(()=>{time.value=new Date().toLocaleTimeString();},1000);
 
-/* CHEMISTRY */
-{q:"मोल किस पर आधारित है?",o:["द्रव्यमान","आयतन","कणों की संख्या","ऊर्जा"],a:2},
-{q:"एल्कोहल का समूह क्या है?",o:["–OH","–COOH","–NH₂","–CHO"],a:0},
-
-/* MATHS */
-{q:"A ⊂ B तो A क्या है?",o:["उपसमुच्चय","रिक्त","समान","असंबंधित"],a:0},
-{q:"अवकलज क्या दर्शाता है?",o:["ढाल","क्षेत्रफल","आयतन","ऊर्जा"],a:0}
-];
-
-/* RENDER */
-function startTest(){
-  startBox.classList.add("hidden");
-  testBox.classList.remove("hidden");
-  let html="";
-  questions.forEach((x,i)=>{
-    html+=`<div class="question">
-    <b>प्रश्न ${i+1}. ${x.q}</b>`;
-    x.o.forEach((op,j)=>{
-      html+=`<label>
-      <input type="radio" name="q${i}" value="${j}"> ○ ${op}
-      </label>`;
-    });
-    html+="</div>";
-  });
-  quiz.innerHTML=html;
-  timerStart();
+// save data
+function saveData(){
+let total=qty.value*rate.value;
+table.innerHTML+=`
+<tr>
+<td>${date.value}</td>
+<td>${time.value}</td>
+<td>${village.value}</td>
+<td>${giver.value}</td>
+<td>${receiver.value}</td>
+<td>${mobile.value}</td>
+<td>${type.value}</td>
+<td>${qty.value}</td>
+<td>${rate.value}</td>
+<td>${total}</td>
+<td>${signGiver.value}</td>
+<td>${signReceiver.value}</td>
+</tr>`;
 }
 
-/* TIMER */
-let t;
-function timerStart(){
-  let time=5400;
-  t=setInterval(()=>{
-    time--;
-    document.getElementById("time").innerText=time;
-    if(time<=0){clearInterval(t);submitTest();}
-  },1000);
-}
-
-/* SUBMIT */
-function submitTest(){
-  clearInterval(t);
-  let correct=0,wrong=0;
-  questions.forEach((x,i)=>{
-    let ans=document.querySelector(`input[name=q${i}]:checked`);
-    if(ans){
-      if(+ans.value===x.a) correct++;
-      else wrong++;
-    }
-  });
-  testBox.classList.add("hidden");
-  resultBox.classList.remove("hidden");
-  resultText.innerText=
-  `सही: ${correct} | गलत: ${wrong} | कुल प्रश्न: ${questions.length}`;
-}
-
-/* ANSWER KEY PDF */
-function downloadAnswer(){
-  let w=window.open("");
-  w.document.write("<h2>Answer Key</h2>");
-  questions.forEach((x,i)=>{
-    w.document.write(`<p>प्रश्न ${i+1}. ${x.q}<br>✔ ${x.o[x.a]}</p>`);
-  });
-  w.print();
+// PDF
+function downloadPDF(){
+const { jsPDF } = window.jspdf;
+let doc=new jsPDF('l','pt','a4');
+doc.text("Shivam Milk Dairy Record",40,30);
+doc.autoTable({html:'#dataTable',startY:50});
+doc.save("Shivam_Milk_Dairy_Record.pdf");
 }
 </script>
 
 </body>
- </html>
+  </html>
