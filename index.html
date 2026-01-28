@@ -4,220 +4,215 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shivam Jee Milk Dairy</title>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-body{margin:0;font-family:Arial;background:#eee}
-marquee{font-size:22px;font-weight:bold;color:green;background:#fff;padding:10px}
-.app{max-width:430px;margin:auto;background:#fff;min-height:100vh;padding:10px}
-input,select,button{width:100%;padding:10px;margin:6px 0}
-button{border:none;border-radius:6px;color:#fff}
-.green{background:green}
-.blue{background:#0b5ed7}
-.red{background:red}
-.card{background:#f1f1f1;padding:10px;border-radius:8px;margin-top:10px}
-img{width:100%;border-radius:8px;margin-top:5px}
-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
-th,td{border:1px solid #000;padding:4px;text-align:center}
-.hidden{display:none}
-.center{text-align:center}
+body{
+  font-family:Arial;
+  background:linear-gradient(to right,#d4fc79,#96e6a1);
+  padding:10px;
+}
+.container{
+  background:#fff;
+  padding:15px;
+  border-radius:10px;
+  box-shadow:0 0 10px #555;
+}
+h2{text-align:center;color:#0a7a2f}
+h3{color:#333}
+input,select,button{
+  width:100%;
+  padding:8px;
+  margin:5px 0;
+  border-radius:6px;
+  border:1px solid #aaa;
+}
+button{
+  background:#0a7a2f;
+  color:white;
+  font-size:15px;
+  border:none;
+}
+.logout{background:#d9534f}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+  font-size:12px;
+}
+th,td{
+  border:1px solid #000;
+  padding:5px;
+  text-align:center;
+}
+th{background:#0a7a2f;color:white}
+.del{background:red}
+img{width:40px;height:40px;border-radius:50%}
 </style>
 </head>
 
 <body>
 
-<!-- 🔴 WELCOME SCROLL -->
-<marquee behavior="scroll" direction="left">
-🌟 WELCOME TO SHIVAM JEE MILK DAIRY 🌟
-</marquee>
+<div class="container">
 
-<!-- LOGIN -->
-<div class="app" id="loginBox">
-<h3 class="center">🔐 Login</h3>
-<input id="user" value="Shivam Yadav">
-<input id="pass" type="password" value="277210">
-<button class="green" onclick="login()">Login</button>
-</div>
+<h2>🙏 Welcome to Shivam Jee Milk Dairy 🙏</h2>
 
-<!-- MAIN APP -->
-<div class="app hidden" id="mainApp">
+<button class="logout" onclick="logout()">🔓 Logout</button>
 
-<h3 class="center">🐄 Shivam Jee Milk Dairy 🐃</h3>
-
-<h4>नया ग्राहक जोड़ें</h4>
+<h3>ग्राहक जोड़ें</h3>
 <input id="cname" placeholder="ग्राहक का नाम">
-<input id="cvillage" placeholder="गाँव">
-<select id="cmilk">
-<option value="">दूध का प्रकार</option>
-<option>गाय</option>
-<option>भैंस</option>
-</select>
-
-<!-- 📷 DIRECT CAMERA -->
-<input type="file" id="cphoto" accept="image/*" capture="environment">
-
-<button class="green" onclick="addCustomer()">ग्राहक सेव करें</button>
+<input id="village" placeholder="गांव का नाम">
+<button onclick="addCustomer()">ग्राहक सेव करें</button>
 
 <hr>
 
-<h4>ग्राहक चुनें</h4>
-<select id="customerList" onchange="selectCustomer()"></select>
-<button class="red" onclick="deleteCustomer()">पूरा ग्राहक Delete</button>
-
-<div id="customerBox"></div>
-
-<hr>
-
-<h4>आज की एंट्री</h4>
+<h3>दैनिक दूध एंट्री</h3>
+<select id="customer"></select>
 <input type="date" id="date">
-<input type="number" id="liter" placeholder="लीटर">
+<input type="number" id="liter" placeholder="दूध (लीटर)">
 <input type="number" id="rate" placeholder="₹ प्रति लीटर">
-<input id="total" placeholder="कुल ₹" readonly>
-<input type="number" id="paid" placeholder="आज दिया ₹">
-<button class="green" onclick="saveEntry()">सेव करें</button>
+<input type="number" id="paid" placeholder="₹ दिया गया">
 
-<div class="card" id="summary"></div>
+<label>📷 ग्राहक फोटो (Direct Camera)</label>
+<input type="file" accept="image/*" capture="environment" id="photo">
 
-<button class="blue" onclick="downloadPDF()">PDF डाउनलोड</button>
-<button class="blue" onclick="sendWhatsApp()">WhatsApp भेजें</button>
-<button class="red" onclick="logout()">Logout</button>
+<button onclick="addEntry()">SAVE ENTRY</button>
 
-<table id="table"></table>
+<hr>
+
+<button onclick="downloadPDF()">📄 PDF DOWNLOAD</button>
+<button onclick="sendWhatsApp()">📱 WhatsApp Send</button>
+
+<table>
+<thead>
+<tr>
+<th>Photo</th>
+<th>नाम</th>
+<th>गांव</th>
+<th>तारीख</th>
+<th>समय</th>
+<th>दूध</th>
+<th>कुल ₹</th>
+<th>दिया</th>
+<th>बाकी</th>
+<th>Delete</th>
+</tr>
+</thead>
+<tbody id="list"></tbody>
+</table>
+
+<h3 id="summary"></h3>
 
 </div>
 
 <script>
-// LOGIN CHECK
-if(localStorage.getItem("login")==="yes"){
- loginBox.classList.add("hidden");
- mainApp.classList.remove("hidden");
-}
-
-function login(){
- if(user.value==="Shivam Yadav" && pass.value==="277210"){
-  localStorage.setItem("login","yes");
-  loginBox.classList.add("hidden");
-  mainApp.classList.remove("hidden");
- }
-}
-function logout(){
- localStorage.removeItem("login");
- location.reload();
-}
-
-// DATA
 let customers = JSON.parse(localStorage.getItem("customers")) || [];
-let current=null;
-
-rate.oninput=liter.oninput=()=>{
- total.value=(rate.value||0)*(liter.value||0);
-};
-
-function saveData(){
- localStorage.setItem("customers",JSON.stringify(customers));
- loadCustomerList();
-}
+let entries = JSON.parse(localStorage.getItem("entries")) || [];
 
 function addCustomer(){
- let f=cphoto.files[0];
- if(!cname.value||!f){alert("सभी जानकारी भरें");return;}
- let r=new FileReader();
- r.onload=()=>{
-  customers.push({
-   name:cname.value,
-   village:cvillage.value,
-   milk:cmilk.value,
-   photo:r.result,
-   entries:[]
+  customers.push({name:cname.value,village:village.value});
+  localStorage.setItem("customers",JSON.stringify(customers));
+  cname.value=""; village.value="";
+  loadCustomers();
+}
+
+function loadCustomers(){
+  customer.innerHTML="";
+  customers.forEach((c,i)=>{
+    customer.innerHTML+=`<option value="${i}">${c.name} - ${c.village}</option>`;
   });
-  saveData();
- };
- r.readAsDataURL(f);
 }
 
-function loadCustomerList(){
- customerList.innerHTML="<option>ग्राहक चुनें</option>";
- customers.forEach((c,i)=>{
-  let o=document.createElement("option");
-  o.value=i;
-  o.text=c.name+" ("+c.village+")";
-  customerList.add(o);
- });
+function getTime(){
+  let d=new Date();
+  let h=d.getHours();
+  let m=d.getMinutes().toString().padStart(2,"0");
+  let s=d.getSeconds().toString().padStart(2,"0");
+  return h+":"+m+":"+s;
 }
 
-function selectCustomer(){
- current=customerList.value;
- let c=customers[current];
- customerBox.innerHTML=
- `<div class="card"><b>${c.name}</b><br>${c.village}<br>${c.milk}
- <img src="${c.photo}"></div>`;
- loadTable();
+function addEntry(){
+  let c = customers[customer.value];
+  let reader = new FileReader();
+  let file = photo.files[0];
+
+  reader.onload=function(){
+    let total = liter.value * rate.value;
+    let due = total - paid.value;
+
+    entries.push({
+      name:c.name,
+      village:c.village,
+      date:date.value,
+      time:getTime(),
+      liter:liter.value,
+      total,
+      paid:paid.value,
+      due,
+      photo:reader.result
+    });
+
+    localStorage.setItem("entries",JSON.stringify(entries));
+    show();
+  }
+  if(file) reader.readAsDataURL(file);
 }
 
-function saveEntry(){
- let c=customers[current];
- c.entries.push({
-  date:date.value,
-  liter:+liter.value,
-  rate:+rate.value,
-  total:+total.value,
-  paid:+paid.value
- });
- saveData(); loadTable();
+function show(){
+  list.innerHTML="";
+  let totalDue=0;
+  entries.forEach((e,i)=>{
+    totalDue+=Number(e.due);
+    list.innerHTML+=`
+    <tr>
+      <td><img src="${e.photo}"></td>
+      <td>${e.name}</td>
+      <td>${e.village}</td>
+      <td>${e.date}</td>
+      <td>${e.time}</td>
+      <td>${e.liter}L</td>
+      <td>${e.total}</td>
+      <td>${e.paid}</td>
+      <td>${e.due}</td>
+      <td><button class="del" onclick="del(${i})">X</button></td>
+    </tr>`;
+  });
+  summary.innerText="👉 कुल बाकी पैसा: ₹ "+totalDue;
 }
 
-function loadTable(){
- let c=customers[current];
- let t=0,p=0;
- table.innerHTML="<tr><th>तारीख</th><th>लीटर</th><th>₹</th><th>Paid</th><th>Due</th><th>❌</th></tr>";
- c.entries.forEach((e,i)=>{
-  t+=e.total; p+=e.paid;
-  let r=table.insertRow();
-  r.insertCell(0).innerText=e.date;
-  r.insertCell(1).innerText=e.liter;
-  r.insertCell(2).innerText=e.total;
-  r.insertCell(3).innerText=e.paid;
-  r.insertCell(4).innerText=e.total-e.paid;
-  r.insertCell(5).innerHTML=`<button class="red" onclick="delEntry(${i})">X</button>`;
- });
- summary.innerHTML=`<b>Total ₹:</b> ${t}<br><b>Paid ₹:</b> ${p}<br><b>Baki ₹:</b> ${t-p}`;
-}
-
-function delEntry(i){
- customers[current].entries.splice(i,1);
- saveData(); loadTable();
-}
-
-function deleteCustomer(){
- if(confirm("पूरा ग्राहक delete हो जाएगा")){
-  customers.splice(current,1);
-  saveData();
-  customerBox.innerHTML=""; table.innerHTML=""; summary.innerHTML="";
- }
+function del(i){
+  entries.splice(i,1);
+  localStorage.setItem("entries",JSON.stringify(entries));
+  show();
 }
 
 function downloadPDF(){
- const {jsPDF}=window.jspdf;
- let pdf=new jsPDF(),y=10;
- let c=customers[current];
- pdf.text("Shivam Jee Milk Dairy",10,y); y+=10;
- pdf.text(c.name+" ("+c.village+")",10,y); y+=8;
- c.entries.forEach(e=>{
-  pdf.text(`${e.date} | ₹${e.total} | Paid ₹${e.paid}`,10,y); y+=6;
- });
- pdf.save(c.name+".pdf");
+  const { jsPDF } = window.jspdf;
+  let pdf=new jsPDF();
+  pdf.text("Shivam Jee Milk Dairy Report",10,10);
+  let y=20;
+  entries.forEach(e=>{
+    pdf.text(`${e.name} | ${e.date} ${e.time} | ₹${e.total} | बाकी ₹${e.due}`,10,y);
+    y+=8;
+  });
+  pdf.save("milk-report.pdf");
 }
 
 function sendWhatsApp(){
- let c=customers[current];
- let msg=`${c.name}%0A`;
- c.entries.forEach(e=>{
-  msg+=`${e.date} ₹${e.total} Paid ₹${e.paid}%0A`;
- });
- window.open(`https://wa.me/?text=${msg}`);
+  let msg="Shivam Jee Milk Dairy Report%0A";
+  entries.forEach(e=>{
+    msg+=`${e.name} ${e.date} ${e.time} ₹${e.total} बाकी ₹${e.due}%0A`;
+  });
+  window.open("https://wa.me/?text="+msg);
 }
 
-loadCustomerList();
+function logout(){
+  alert("Logout ho gaya");
+}
+
+loadCustomers();
+show();
 </script>
 
 </body>
