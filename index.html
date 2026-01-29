@@ -10,42 +10,24 @@
 <style>
 body{
   font-family:Arial;
-  background:linear-gradient(to right,#d4fc79,#96e6a1);
-  padding:10px;
+  background:linear-gradient(to right,#a8ff78,#78ffd6);
+  padding:10px
 }
 .container{
   background:#fff;
   padding:15px;
-  border-radius:10px;
-  box-shadow:0 0 10px #555;
+  border-radius:12px;
+  box-shadow:0 0 10px #555
 }
 h2{text-align:center;color:#0a7a2f}
-h3{color:#333}
 input,select,button{
-  width:100%;
-  padding:8px;
-  margin:5px 0;
-  border-radius:6px;
-  border:1px solid #aaa;
+  width:100%;padding:8px;margin:5px 0;
+  border-radius:6px;border:1px solid #aaa
 }
-button{
-  background:#0a7a2f;
-  color:white;
-  font-size:15px;
-  border:none;
-}
+button{background:#0a7a2f;color:white;border:none}
 .logout{background:#d9534f}
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
-  font-size:12px;
-}
-th,td{
-  border:1px solid #000;
-  padding:5px;
-  text-align:center;
-}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px}
+th,td{border:1px solid #000;padding:5px;text-align:center}
 th{background:#0a7a2f;color:white}
 .del{background:red}
 img{width:40px;height:40px;border-radius:50%}
@@ -53,12 +35,10 @@ img{width:40px;height:40px;border-radius:50%}
 </head>
 
 <body>
-
 <div class="container">
 
 <h2>🙏 Welcome to Shivam Jee Milk Dairy 🙏</h2>
-
-<button class="logout" onclick="logout()">🔓 Logout</button>
+<button class="logout" onclick="logout()">Logout</button>
 
 <h3>ग्राहक जोड़ें</h3>
 <input id="cname" placeholder="ग्राहक का नाम">
@@ -74,15 +54,13 @@ img{width:40px;height:40px;border-radius:50%}
 <input type="number" id="rate" placeholder="₹ प्रति लीटर">
 <input type="number" id="paid" placeholder="₹ दिया गया">
 
-<label>📷 ग्राहक फोटो (Direct Camera)</label>
+<label>📷 फोटो (Direct Camera)</label>
 <input type="file" accept="image/*" capture="environment" id="photo">
 
-<button onclick="addEntry()">SAVE ENTRY</button>
+<button onclick="addEntry()">SAVE</button>
 
-<hr>
-
-<button onclick="downloadPDF()">📄 PDF DOWNLOAD</button>
-<button onclick="sendWhatsApp()">📱 WhatsApp Send</button>
+<button onclick="downloadPDF()">📄 PDF</button>
+<button onclick="sendWhatsApp()">📱 WhatsApp</button>
 
 <table>
 <thead>
@@ -110,6 +88,13 @@ img{width:40px;height:40px;border-radius:50%}
 let customers = JSON.parse(localStorage.getItem("customers")) || [];
 let entries = JSON.parse(localStorage.getItem("entries")) || [];
 
+function getTime(){
+  let d=new Date();
+  return d.getHours()+":"+
+         String(d.getMinutes()).padStart(2,"0")+":"+
+         String(d.getSeconds()).padStart(2,"0");
+}
+
 function addCustomer(){
   customers.push({name:cname.value,village:village.value});
   localStorage.setItem("customers",JSON.stringify(customers));
@@ -124,22 +109,30 @@ function loadCustomers(){
   });
 }
 
-function getTime(){
-  let d=new Date();
-  let h=d.getHours();
-  let m=d.getMinutes().toString().padStart(2,"0");
-  let s=d.getSeconds().toString().padStart(2,"0");
-  return h+":"+m+":"+s;
-}
-
 function addEntry(){
   let c = customers[customer.value];
-  let reader = new FileReader();
   let file = photo.files[0];
+  if(!file){ alert("Photo zaroori hai"); return; }
 
-  reader.onload=function(){
-    let total = liter.value * rate.value;
-    let due = total - paid.value;
+  let reader=new FileReader();
+  let img=new Image();
+
+  reader.onload=e=>img.src=e.target.result;
+
+  img.onload=function(){
+    let canvas=document.createElement("canvas");
+    let maxW=300;
+    let scale=maxW/img.width;
+    canvas.width=maxW;
+    canvas.height=img.height*scale;
+
+    let ctx=canvas.getContext("2d");
+    ctx.drawImage(img,0,0,canvas.width,canvas.height);
+
+    let smallPhoto=canvas.toDataURL("image/jpeg",0.6);
+
+    let total=liter.value*rate.value;
+    let due=total-paid.value;
 
     entries.push({
       name:c.name,
@@ -150,13 +143,13 @@ function addEntry(){
       total,
       paid:paid.value,
       due,
-      photo:reader.result
+      photo:smallPhoto
     });
 
     localStorage.setItem("entries",JSON.stringify(entries));
     show();
-  }
-  if(file) reader.readAsDataURL(file);
+  };
+  reader.readAsDataURL(file);
 }
 
 function show(){
@@ -171,7 +164,7 @@ function show(){
       <td>${e.village}</td>
       <td>${e.date}</td>
       <td>${e.time}</td>
-      <td>${e.liter}L</td>
+      <td>${e.liter}</td>
       <td>${e.total}</td>
       <td>${e.paid}</td>
       <td>${e.due}</td>
@@ -188,7 +181,7 @@ function del(i){
 }
 
 function downloadPDF(){
-  const { jsPDF } = window.jspdf;
+  const { jsPDF }=window.jspdf;
   let pdf=new jsPDF();
   pdf.text("Shivam Jee Milk Dairy Report",10,10);
   let y=20;
@@ -200,7 +193,7 @@ function downloadPDF(){
 }
 
 function sendWhatsApp(){
-  let msg="Shivam Jee Milk Dairy Report%0A";
+  let msg="Shivam Jee Milk Dairy%0A";
   entries.forEach(e=>{
     msg+=`${e.name} ${e.date} ${e.time} ₹${e.total} बाकी ₹${e.due}%0A`;
   });
@@ -216,4 +209,4 @@ show();
 </script>
 
 </body>
- </html>
+  </html>
