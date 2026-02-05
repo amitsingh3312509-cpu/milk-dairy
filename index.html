@@ -1,20 +1,22 @@
-<!-- Online Order (Email shows ordered items clearly) -->
+<!-- ✅ FINAL Online Order Form (Direct Email Notification) -->
 <div class="card">
-  <h2>🛎️ Place Your Order</h2>
+  <h2>🛒 Online Order</h2>
 
-  <form action="https://formsubmit.co/amitsingh3312509@gmail.com" method="POST">
+  <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
 
-    <!-- FormSubmit Settings -->
-    <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_subject" value="🔔 New Order Received – Amit Restaurant">
+    <!-- Email Settings -->
+    <input type="hidden" name="_subject" value="🛎️ New Order Received - Amit Restaurant">
     <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
 
+    <!-- Customer Details -->
     <input name="Customer Name" placeholder="Your Name" required>
-    <input name="Mobile" placeholder="Mobile Number" required>
-    <input name="Address" placeholder="Delivery Address" required>
+    <input name="Mobile Number" placeholder="Mobile Number" required>
+    <input name="Village / Address" placeholder="Village / Address" required>
 
-    <select name="Dish" id="dish" onchange="updatePrice()" required>
-      <option value="">Select Item</option>
+    <!-- Order Details -->
+    <select name="Ordered Item" id="dish" onchange="updatePrice()" required>
+      <option value="">Select Dish</option>
       <option value="Paneer Butter Masala - ₹180" data-price="180">Paneer Butter Masala - ₹180</option>
       <option value="Chicken Biryani - ₹220" data-price="220">Chicken Biryani - ₹220</option>
       <option value="Veg Chowmein - ₹120" data-price="120">Veg Chowmein - ₹120</option>
@@ -23,11 +25,11 @@
 
     <input id="qty" name="Quantity" type="number" placeholder="Quantity" oninput="updatePrice()" required>
 
+    <!-- Total Price -->
     <input type="hidden" id="totalInput" name="Total Price">
+    <p><b>Total Price: </b><span id="total">₹0</span></p>
 
-    <p>Total: <b id="total">₹0</b></p>
-
-    <button type="submit">Confirm Order</button>
+    <button type="submit">Place Order</button>
   </form>
 </div>
 
@@ -37,6 +39,7 @@
     const price = dish.options[dish.selectedIndex]?.getAttribute("data-price") || 0;
     const qty = document.getElementById("qty").value || 0;
     const total = price * qty;
+
     document.getElementById("total").innerText = "₹" + total;
     document.getElementById("totalInput").value = "₹" + total;
   }
