@@ -1,46 +1,143 @@
-<!-- ✅ FINAL Online Order Form (Direct Email Notification) -->
-<div class="card">
-  <h2>🛒 Online Order</h2>
+<!TYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Amit Restaurant</title>
+  <style>
+    body{font-family:Arial, sans-serif; background:#f4f6f9; margin:0}
+    .header{background:linear-gradient(90deg,#ff416c,#ff4b2b); color:#fff; padding:20px; text-align:center}
+    .container{max-width:900px; margin:auto; padding:12px}
+    .card{background:#fff; padding:14px; margin:12px 0; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.1)}
+    input,select,textarea,button{width:100%; padding:10px; margin:6px 0}
+    button{background:#ff7a18; color:#fff; border:none; border-radius:6px; font-weight:bold}
+    .btn-green{background:#25D366}
+    .btn-blue{background:#4f46e5}
+    footer{text-align:center; padding:15px; color:#555}
+  </style>
+</head>
+<body>
 
-  <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
+  <div class="header">
+    <h1>🍽️ Amit Restaurant</h1>
+    <p>Online Order • Job Apply • Feedback</p>
+  </div>
 
-    <!-- Email Settings -->
-    <input type="hidden" name="_subject" value="🛎️ New Order Received - Amit Restaurant">
-    <input type="hidden" name="_template" value="table">
-    <input type="hidden" name="_captcha" value="false">
+  <div class="container">
 
-    <!-- Customer Details -->
-    <input name="Customer Name" placeholder="Your Name" required>
-    <input name="Mobile Number" placeholder="Mobile Number" required>
-    <input name="Village / Address" placeholder="Village / Address" required>
+    <div class="card">
+      <a class="btn-green" style="display:block;text-align:center;color:#fff;text-decoration:none;padding:10px;border-radius:6px"
+         href="https://wa.me/91XXXXXXXXXX" target="_blank">📲 Order on WhatsApp</a><br>
+      <a class="btn-blue" style="display:block;text-align:center;color:#fff;text-decoration:none;padding:10px;border-radius:6px"
+         href="menu.pdf" download>📄 Download Menu (PDF)</a>
+    </div>
 
-    <!-- Order Details -->
-    <select name="Ordered Item" id="dish" onchange="updatePrice()" required>
-      <option value="">Select Dish</option>
-      <option value="Paneer Butter Masala - ₹180" data-price="180">Paneer Butter Masala - ₹180</option>
-      <option value="Chicken Biryani - ₹220" data-price="220">Chicken Biryani - ₹220</option>
-      <option value="Veg Chowmein - ₹120" data-price="120">Veg Chowmein - ₹120</option>
-      <option value="Butter Naan - ₹30" data-price="30">Butter Naan - ₹30</option>
-    </select>
+    <!-- Order Form -->
+    <div class="card">
+      <h2>🛒 Online Food Order</h2>
+      <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
+        <input type="hidden" name="_subject" value="🛎️ New Food Order - Amit Restaurant">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
 
-    <input id="qty" name="Quantity" type="number" placeholder="Quantity" oninput="updatePrice()" required>
+        <input name="Customer Name" placeholder="Your Name" required>
+        <input name="Mobile Number" placeholder="Mobile Number" required>
 
-    <!-- Total Price -->
-    <input type="hidden" id="totalInput" name="Total Price">
-    <p><b>Total Price: </b><span id="total">₹0</span></p>
+        <select name="Village (Ballia District)" required>
+          <option value="">Select Village</option>
+          <option>Ballia (City)</option>
+          <option>Bairia</option>
+          <option>Rasra</option>
+          <option>Sikandarpur</option>
+          <option>Belthara Road</option>
+          <option>Chilkahar</option>
+          <option>Maniyar</option>
+          <option>Reoti</option>
+          <option>Revati Bazar</option>
+          <option>Nagra</option>
+          <option>Kopaganj Border</option>
+          <option>Haldi</option>
+        </select>
 
-    <button type="submit">Place Order</button>
-  </form>
-</div>
+        <input name="Address" placeholder="Full Address" required>
 
-<script>
-  function updatePrice() {
-    const dish = document.getElementById("dish");
-    const price = dish.options[dish.selectedIndex]?.getAttribute("data-price") || 0;
-    const qty = document.getElementById("qty").value || 0;
-    const total = price * qty;
+        <select id="dish" name="Item Name" onchange="updatePrice()" required>
+          <option value="">Select Item</option>
+          <option value="Paneer Butter Masala - ₹180" data-price="180">Paneer Butter Masala - ₹180</option>
+          <option value="Shahi Paneer - ₹190" data-price="190">Shahi Paneer - ₹190</option>
+          <option value="Mix Veg - ₹150" data-price="150">Mix Veg - ₹150</option>
+          <option value="Dal Makhani - ₹160" data-price="160">Dal Makhani - ₹160</option>
+          <option value="Butter Naan - ₹30" data-price="30">Butter Naan - ₹30</option>
+          <option value="Veg Chowmein - ₹120" data-price="120">Veg Chowmein - ₹120</option>
+          <option value="Veg Fried Rice - ₹130" data-price="130">Veg Fried Rice - ₹130</option>
+          <option value="Veg Biryani - ₹150" data-price="150">Veg Biryani - ₹150</option>
+          <option value="Chicken Biryani - ₹220" data-price="220">Chicken Biryani - ₹220</option>
+          <option value="Butter Chicken - ₹240" data-price="240">Butter Chicken - ₹240</option>
+        </select>
 
-    document.getElementById("total").innerText = "₹" + total;
-    document.getElementById("totalInput").value = "₹" + total;
-  }
-  </script>
+        <input id="qty" name="Quantity" type="number" placeholder="Quantity" min="1" oninput="updatePrice()" required>
+
+        <label>Preferred Delivery Time</label>
+        <input type="time" name="Delivery Time" required>
+
+        <input type="hidden" id="totalInput" name="Total Price">
+        <p><b>Total: </b><span id="total">₹0</span></p>
+
+        <button type="submit">Place Order</button>
+      </form>
+    </div>
+
+    <!-- Job Apply -->
+    <div class="card">
+      <h2>💼 Job / Post Apply</h2>
+      <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
+        <input type="hidden" name="_subject" value="💼 New Job Apply - Amit Restaurant">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+
+        <input name="Applicant Name" placeholder="Your Name" required>
+        <input name="Mobile Number" placeholder="Mobile Number" required>
+
+        <select name="Post Applied For" required>
+          <option value="">Select Post</option>
+          <option>Cook</option>
+          <option>Helper</option>
+          <option>Delivery Boy</option>
+          <option>Waiter</option>
+          <option>Cleaner</option>
+        </select>
+
+        <textarea name="Experience" placeholder="Your Experience (Optional)"></textarea>
+        <button type="submit">Apply Now</button>
+      </form>
+    </div>
+
+    <!-- Feedback -->
+    <div class="card">
+      <h2>⭐ Feedback</h2>
+      <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
+        <input type="hidden" name="_subject" value="⭐ New Feedback - Amit Restaurant">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+
+        <input name="Name" placeholder="Your Name">
+        <input name="Mobile" placeholder="Mobile Number">
+        <textarea name="Feedback Message" placeholder="Write your feedback..." required></textarea>
+        <button type="submit">Send Feedback</button>
+      </form>
+    </div>
+
+  </div>
+
+  <footer>
+    Created by Amit Kumar Singh
+  </footer>
+
+  <script>
+    function updatePrice(){
+      const dish = document.getElementById("dish");
+      const price = dish.options[dish.selectedIndex]?.getAttribute("data-price") || 0;
+      const qty = document.getElementById("qty").value || 0;
+      const total = price * qty;
+      document.getElementById("total").innerText = "₹" + total;
+      document.getElementById("t
