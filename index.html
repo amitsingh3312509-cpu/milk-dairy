@@ -14,18 +14,19 @@ input,select,textarea,button{width:100%;padding:8px;margin:5px 0}
 button{background:#e63946;color:#fff;border:none;border-radius:6px}
 .nav{display:flex;gap:8px;flex-wrap:wrap}
 .nav button{flex:1}
-#ownerPhoto,#qrPhoto{width:120px;height:120px;border-radius:10px;object-fit:cover;border:3px solid #fff;cursor:pointer}
+#ownerPhoto,#qrPhoto{width:120px;height:120px;border-radius:10px;object-fit:cover;border:3px solid #fff}
 .footer{text-align:center;color:#666;margin:20px}
 .hide{display:none}
+.lock{background:#333}
 .small{font-size:12px;color:#777}
 </style>
 </head>
 <body>
 
 <header>
-  <p>Owner Photo (Click to Change)</p>
+  <p>Owner Photo</p>
   <img id="ownerPhoto" src="https://via.placeholder.com/150" alt="Owner Photo">
-  <input type="file" id="ownerInput" accept="image/*" style="display:none">
+  <button class="lock" id="changeOwnerBtn">🔒 Change Photo (Owner Only)</button>
 
   <h1>Amit Restaurant</h1>
   <marquee>🙏 Meera Jee | Ajay Singh Jee 🙏</marquee>
@@ -43,47 +44,45 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
 <!-- ORDER -->
 <div class="card" id="order">
 <h2>🛒 Online Order</h2>
-<form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
-  <input type="hidden" name="_subject" value="🛎️ New Order - Amit Restaurant">
+<form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST" onsubmit="generateReceipt()">
+  <input type="hidden" name="_subject" value="🧾 New Order - Amit Restaurant">
   <input type="hidden" name="_template" value="table">
   <input type="hidden" name="_captcha" value="false">
+
+  <input type="hidden" name="Receipt No" id="receiptNo">
+  <input type="hidden" name="Owner Photo Link" value="https://teal-cranachan-19bbda.netlify.app/">
 
   <input name="Customer Name" placeholder="Name" required>
   <input name="Mobile" placeholder="Mobile Number" required>
 
   <select name="Village" required>
-    <option value="">Select Village (Bansdih, Ballia)</option>
-    <option>Ajanara</option><option>Bansdih</option><option>Bari</option>
-    <option>Chandpur</option><option>Dumaria</option><option>Gopalpur</option>
-    <option>Chhotaki Seriya</option><option>Jamui</option><option>Chatai</option>
-    <option>Lilkar</option><option>Maniyar</option><option>Narayanpur</option>
-    <option>Ojha Tola</option><option>Pranpur</option><option>Rajpur</option>
-    <option>Saraya</option><option>Tendua</option><option>Umarpur</option>
-    <option>Vishunpura</option><option>Yadav Tola</option>
+    <option value="">Select Village (Ballia - Bansdih)</option>
+    <option>Ahirauli</option><option>Bansdih</option><option>Bariyarpur</option>
+    <option>Bariyarpur Jamin Bari</option><option>Bharouli</option>
+    <option>Chandpura</option><option>Dharhara</option><option>Gauri</option>
+    <option>Haldi</option><option>Haripur</option><option>Jamui</option>
+    <option>Kodahara</option><option>Kujra</option><option>Majhauli</option>
+    <option>Maniyar</option><option>Masumganj</option><option>Nandpur</option>
+    <option>Pipra</option><option>Rajpur</option><option>Reotipur</option>
+    <option>Shivpur</option><option>Sonbarsa</option><option>Surajpura</option>
+    <option>Tiyar</option>
   </select>
 
-  <select name="Item" id="dish" onchange="calc()" required>
+  <select name="Item Name" id="dish" onchange="calc()" required>
     <option value="">Select Item</option>
+    <option data-price="10">Mineral Water - ₹10</option>
+    <option data-price="40">Cold Drink - ₹40</option>
+    <option data-price="50">Samosa (2 pcs) - ₹50</option>
+    <option data-price="80">Veg Sandwich - ₹80</option>
+    <option data-price="120">Veg Chowmein - ₹120</option>
+    <option data-price="150">Veg Biryani - ₹150</option>
     <option data-price="180">Paneer Butter Masala - ₹180</option>
     <option data-price="220">Chicken Biryani - ₹220</option>
-    <option data-price="150">Veg Biryani - ₹150</option>
-    <option data-price="120">Veg Chowmein - ₹120</option>
-    <option data-price="100">Egg Roll - ₹100</option>
-    <option data-price="30">Butter Naan - ₹30</option>
-    <option data-price="40">Tandoori Roti - ₹40</option>
-    <option data-price="60">Samosa - ₹60</option>
-    <option data-price="50">Tea - ₹50</option>
-    <option data-price="80">Coffee - ₹80</option>
-    <option data-price="70">Cold Drink - ₹70</option>
-    <option data-price="90">French Fries - ₹90</option>
-    <option data-price="110">Burger - ₹110</option>
-    <option data-price="140">Pizza - ₹140</option>
-    <option data-price="160">Fried Rice - ₹160</option>
-    <option data-price="130">Veg Thali - ₹130</option>
-    <option data-price="180">Non Veg Thali - ₹180</option>
-    <option data-price="200">Chicken Curry - ₹200</option>
-    <option data-price="170">Paneer Chilli - ₹170</option>
-    <option data-price="60">Gulab Jamun - ₹60</option>
+    <option data-price="300">Butter Chicken - ₹300</option>
+    <option data-price="350">Special Thali - ₹350</option>
+    <option data-price="400">Family Thali - ₹400</option>
+    <option data-price="250">Chocolate Cake (Half Kg) - ₹250</option>
+    <option data-price="450">Chocolate Cake (1 Kg) - ₹450</option>
   </select>
 
   <input id="qty" name="Quantity" type="number" placeholder="Quantity" oninput="calc()" required>
@@ -96,55 +95,63 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
 </form>
 
 <button onclick="sendWhatsApp()">📲 WhatsApp Send</button>
-<button onclick="downloadPDF()">📄 Menu / Order PDF</button>
+<button onclick="window.print()">📄 Download Receipt / Menu</button>
 </div>
 
 <!-- JOB -->
 <div class="card hide" id="job">
-<h2>💼 Job Apply</h2>
-<form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
-  <input type="hidden" name="_subject" value="📄 Job Application - Amit Restaurant">
-  <input type="hidden" name="_template" value="table">
-  <input type="hidden" name="_captcha" value="false">
+  <h2>💼 Job Apply</h2>
+  <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
+    <input type="hidden" name="_subject" value="Job Apply - Amit Restaurant">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
 
-  <input name="Name" placeholder="Name" required>
-  <input name="Mobile" placeholder="Mobile" required>
-  <select name="Post">
-    <option>Cook</option><option>Helper</option><option>Waiter</option><option>Delivery Boy</option><option>Cleaner</option>
-  </select>
-  <textarea name="Experience" placeholder="Experience"></textarea>
-  <button type="submit">Apply</button>
-</form>
+    <input name="Name" placeholder="Your Name" required>
+    <input name="Mobile" placeholder="Mobile Number" required>
+    <select name="Vacancy" required>
+      <option value="">Select Vacancy</option>
+      <option>Cook</option>
+      <option>Helper</option>
+      <option>Delivery Boy</option>
+      <option>Cashier</option>
+      <option>Cleaner</option>
+      <option>Waiter</option>
+      <option>Manager</option>
+      <option>Tea Maker</option>
+    </select>
+    <button type="submit">Apply</button>
+  </form>
 </div>
 
 <!-- FEEDBACK -->
 <div class="card hide" id="feedback">
-<h2>📝 Feedback</h2>
-<form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
-  <input type="hidden" name="_subject" value="⭐ Feedback - Amit Restaurant">
-  <input type="hidden" name="_template" value="table">
-  <input type="hidden" name="_captcha" value="false">
+  <h2>📝 Feedback</h2>
+  <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
+    <input type="hidden" name="_subject" value="Feedback - Amit Restaurant">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
 
-  <input name="Name" placeholder="Name">
-  <textarea name="Feedback" placeholder="Write feedback"></textarea>
-  <button type="submit">Send Feedback</button>
-</form>
+    <input name="Name" placeholder="Your Name" required>
+    <textarea name="Feedback" placeholder="Your feedback..." required></textarea>
+    <button type="submit">Send Feedback</button>
+  </form>
 </div>
 
 <!-- PAYMENT -->
 <div class="card hide" id="pay">
-<h2>💳 Payment (Click QR to Change)</h2>
-<p>UPI Number: <b>9151041867</b></p>
-<img id="qrPhoto" src="https://via.placeholder.com/200" alt="UPI QR">
-<input type="file" id="qrInput" accept="image/*" style="display:none">
-<p class="small">QR par click karo → gallery se apna QR photo lagao (refresh ke baad bhi rahega).</p>
+  <h2>💳 Payment (UPI)</h2>
+  <p>UPI Number: <b>9151041867</b></p>
+  <img id="qrPhoto" src="https://via.placeholder.com/200" alt="UPI QR">
+  <button class="lock" id="changeQRBtn">🔒 Change QR (Owner Only)</button>
+  <p class="small">Scan QR or pay via UPI number</p>
 </div>
 
 </div>
 
-<div class="footer">
-Created by <b>Amit Kumar Singh</b> ❤️
-</div>
+<div class="footer">Created by <b>Amit Kumar Singh</b> ❤️</div>
+
+<input type="file" id="ownerInput" accept="image/*" hidden>
+<input type="file" id="qrInput" accept="image/*" hidden>
 
 <script>
 function show(id){
@@ -160,48 +167,47 @@ function calc(){
   document.getElementById('totalInput').value="₹"+total;
 }
 function sendWhatsApp(){
-  const msg="Hello, I want to order from Amit Restaurant";
-  window.open("https://wa.me/919151041867?text="+encodeURIComponent(msg));
+  window.open("https://wa.me/919151041867?text="+encodeURIComponent("Hello, I want to order from Amit Restaurant"));
 }
-function downloadPDF(){
-  window.print();
+function generateReceipt(){
+  const r = "AMIT-" + Date.now();
+  document.getElementById("receiptNo").value = r;
 }
 
-// Owner photo save (localStorage)
+const OWNER_PIN="1234"; // 🔑 apna PIN yahan change kar sakte ho
 const ownerPhoto=document.getElementById("ownerPhoto");
+const qrPhoto=document.getElementById("qrPhoto");
 const ownerInput=document.getElementById("ownerInput");
-const savedOwner=localStorage.getItem("ownerPhoto");
-if(savedOwner){ ownerPhoto.src=savedOwner; }
-ownerPhoto.onclick=()=>ownerInput.click();
-ownerInput.onchange=function(){
-  const f=this.files[0];
-  if(f){
-    const r=new FileReader();
-    r.onload=e=>{
-      ownerPhoto.src=e.target.result;
-      localStorage.setItem("ownerPhoto", e.target.result);
-    };
-    r.readAsDataURL(f);
-  }
+const qrInput=document.getElementById("qrInput");
+
+document.getElementById("changeOwnerBtn").onclick=()=>{
+  const pin=prompt("Owner PIN daalein:");
+  if(pin===OWNER_PIN) ownerInput.click();
+  else alert("Wrong PIN!");
+};
+document.getElementById("changeQRBtn").onclick=()=>{
+  const pin=prompt("Owner PIN daalein:");
+  if(pin===OWNER_PIN) qrInput.click();
+  else alert("Wrong PIN!");
 };
 
-// QR photo save (localStorage)
-const qrPhoto=document.getElementById("qrPhoto");
-const qrInput=document.getElementById("qrInput");
-const savedQR=localStorage.getItem("qrPhoto");
-if(savedQR){ qrPhoto.src=savedQR; }
-qrPhoto.onclick=()=>qrInput.click();
-qrInput.onchange=function(){
-  const f=this.files[0];
-  if(f){
-    const r=new FileReader();
-    r.onload=e=>{
-      qrPhoto.src=e.target.result;
-      localStorage.setItem("qrPhoto", e.target.result);
-    };
-    r.readAsDataURL(f);
-  }
+ownerInput.onchange=()=>{
+  const f=ownerInput.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=e=>{ ownerPhoto.src=e.target.result; localStorage.setItem("ownerPhoto", e.target.result); };
+  r.readAsDataURL(f);
 };
+qrInput.onchange=()=>{
+  const f=qrInput.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=e=>{ qrPhoto.src=e.target.result; localStorage.setItem("qrPhoto", e.target.result); };
+  r.readAsDataURL(f);
+};
+
+const savedOwner=localStorage.getItem("ownerPhoto");
+if(savedOwner) ownerPhoto.src=savedOwner;
+const savedQR=localStorage.getItem("qrPhoto");
+if(savedQR) qrPhoto.src=savedQR;
 </script>
 
 </body>
