@@ -24,7 +24,7 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
 <body>
 
 <header>
-  <p>Owner Photo</p>
+  <p>Owner Photo (Customer ko dikhega)</p>
   <img id="ownerPhoto" src="https://via.placeholder.com/150" alt="Owner Photo">
   <button class="lock" id="changeOwnerBtn">🔒 Change Photo (Owner Only)</button>
 
@@ -50,39 +50,25 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
   <input type="hidden" name="_captcha" value="false">
 
   <input type="hidden" name="Receipt No" id="receiptNo">
-  <input type="hidden" name="Owner Photo Link" value="https://teal-cranachan-19bbda.netlify.app/">
+  <input type="hidden" name="Owner Photo Set" value="Yes">
 
   <input name="Customer Name" placeholder="Name" required>
   <input name="Mobile" placeholder="Mobile Number" required>
 
   <select name="Village" required>
-    <option value="">Select Village (Ballia - Bansdih)</option>
-    <option>Ahirauli</option><option>Bansdih</option><option>Bariyarpur</option>
-    <option>Bariyarpur Jamin Bari</option><option>Bharouli</option>
-    <option>Chandpura</option><option>Dharhara</option><option>Gauri</option>
-    <option>Haldi</option><option>Haripur</option><option>Jamui</option>
-    <option>Kodahara</option><option>Kujra</option><option>Majhauli</option>
-    <option>Maniyar</option><option>Masumganj</option><option>Nandpur</option>
-    <option>Pipra</option><option>Rajpur</option><option>Reotipur</option>
-    <option>Shivpur</option><option>Sonbarsa</option><option>Surajpura</option>
-    <option>Tiyar</option>
+    <option value="">Select Village</option>
+    <option>Bansdih</option><option>Haldi</option><option>Maniyar</option>
   </select>
 
+  <!-- MENU: Cold Drink + 5 Items -->
   <select name="Item Name" id="dish" onchange="calc()" required>
     <option value="">Select Item</option>
-    <option data-price="10">Mineral Water - ₹10</option>
     <option data-price="40">Cold Drink - ₹40</option>
     <option data-price="50">Samosa (2 pcs) - ₹50</option>
     <option data-price="80">Veg Sandwich - ₹80</option>
     <option data-price="120">Veg Chowmein - ₹120</option>
     <option data-price="150">Veg Biryani - ₹150</option>
-    <option data-price="180">Paneer Butter Masala - ₹180</option>
     <option data-price="220">Chicken Biryani - ₹220</option>
-    <option data-price="300">Butter Chicken - ₹300</option>
-    <option data-price="350">Special Thali - ₹350</option>
-    <option data-price="400">Family Thali - ₹400</option>
-    <option data-price="250">Chocolate Cake (Half Kg) - ₹250</option>
-    <option data-price="450">Chocolate Cake (1 Kg) - ₹450</option>
   </select>
 
   <input id="qty" name="Quantity" type="number" placeholder="Quantity" oninput="calc()" required>
@@ -93,9 +79,6 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
 
   <button type="submit">Order Now</button>
 </form>
-
-<button onclick="sendWhatsApp()">📲 WhatsApp Send</button>
-<button onclick="window.print()">📄 Download Receipt / Menu</button>
 </div>
 
 <!-- JOB -->
@@ -105,20 +88,8 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
     <input type="hidden" name="_subject" value="Job Apply - Amit Restaurant">
     <input type="hidden" name="_template" value="table">
     <input type="hidden" name="_captcha" value="false">
-
     <input name="Name" placeholder="Your Name" required>
     <input name="Mobile" placeholder="Mobile Number" required>
-    <select name="Vacancy" required>
-      <option value="">Select Vacancy</option>
-      <option>Cook</option>
-      <option>Helper</option>
-      <option>Delivery Boy</option>
-      <option>Cashier</option>
-      <option>Cleaner</option>
-      <option>Waiter</option>
-      <option>Manager</option>
-      <option>Tea Maker</option>
-    </select>
     <button type="submit">Apply</button>
   </form>
 </div>
@@ -130,7 +101,6 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
     <input type="hidden" name="_subject" value="Feedback - Amit Restaurant">
     <input type="hidden" name="_template" value="table">
     <input type="hidden" name="_captcha" value="false">
-
     <input name="Name" placeholder="Your Name" required>
     <textarea name="Feedback" placeholder="Your feedback..." required></textarea>
     <button type="submit">Send Feedback</button>
@@ -140,10 +110,10 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
 <!-- PAYMENT -->
 <div class="card hide" id="pay">
   <h2>💳 Payment (UPI)</h2>
-  <p>UPI Number: <b>9151041867</b></p>
+  <p>UPI: <b>9151041867</b></p>
+  <p>QR Code (Customer ko dikhega)</p>
   <img id="qrPhoto" src="https://via.placeholder.com/200" alt="UPI QR">
   <button class="lock" id="changeQRBtn">🔒 Change QR (Owner Only)</button>
-  <p class="small">Scan QR or pay via UPI number</p>
 </div>
 
 </div>
@@ -166,15 +136,12 @@ function calc(){
   document.getElementById('total').innerText="₹"+total;
   document.getElementById('totalInput').value="₹"+total;
 }
-function sendWhatsApp(){
-  window.open("https://wa.me/919151041867?text="+encodeURIComponent("Hello, I want to order from Amit Restaurant"));
-}
 function generateReceipt(){
   const r = "AMIT-" + Date.now();
   document.getElementById("receiptNo").value = r;
 }
 
-const OWNER_PIN="1234"; // 🔑 apna PIN yahan change kar sakte ho
+const OWNER_PIN="1234"; // 🔐 yahan apna PIN set karo
 const ownerPhoto=document.getElementById("ownerPhoto");
 const qrPhoto=document.getElementById("qrPhoto");
 const ownerInput=document.getElementById("ownerInput");
@@ -194,16 +161,23 @@ document.getElementById("changeQRBtn").onclick=()=>{
 ownerInput.onchange=()=>{
   const f=ownerInput.files[0]; if(!f) return;
   const r=new FileReader();
-  r.onload=e=>{ ownerPhoto.src=e.target.result; localStorage.setItem("ownerPhoto", e.target.result); };
+  r.onload=e=>{
+    ownerPhoto.src=e.target.result;
+    localStorage.setItem("ownerPhoto", e.target.result); // ✅ Permanent save
+  };
   r.readAsDataURL(f);
 };
 qrInput.onchange=()=>{
   const f=qrInput.files[0]; if(!f) return;
   const r=new FileReader();
-  r.onload=e=>{ qrPhoto.src=e.target.result; localStorage.setItem("qrPhoto", e.target.result); };
+  r.onload=e=>{
+    qrPhoto.src=e.target.result;
+    localStorage.setItem("qrPhoto", e.target.result); // ✅ Permanent save
+  };
   r.readAsDataURL(f);
 };
 
+// Load permanent images on page load
 const savedOwner=localStorage.getItem("ownerPhoto");
 if(savedOwner) ownerPhoto.src=savedOwner;
 const savedQR=localStorage.getItem("qrPhoto");
@@ -211,4 +185,4 @@ if(savedQR) qrPhoto.src=savedQR;
 </script>
 
 </body>
-    </html>
+      </html>
