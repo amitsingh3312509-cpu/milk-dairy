@@ -24,9 +24,9 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
 <body>
 
 <header>
-  <p>Owner Photo (Customer ko dikhega)</p>
-  <img id="ownerPhoto" src="https://via.placeholder.com/150" alt="Owner Photo">
-  <button class="lock" id="changeOwnerBtn">🔒 Change Photo (Owner Only)</button>
+  <p>Owner Photo</p>
+  <!-- OWNER PHOTO FIXED -->
+  <img id="ownerPhoto" src="https://i.postimg.cc/BQyMdRRL/IMG-20260109-205504-644.webp" alt="Owner Photo">
 
   <h1>Amit Restaurant</h1>
   <marquee>🙏 Meera Jee | Ajay Singh Jee 🙏</marquee>
@@ -50,25 +50,22 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
   <input type="hidden" name="_captcha" value="false">
 
   <input type="hidden" name="Receipt No" id="receiptNo">
-  <input type="hidden" name="Owner Photo Set" value="Yes">
 
   <input name="Customer Name" placeholder="Name" required>
   <input name="Mobile" placeholder="Mobile Number" required>
 
   <select name="Village" required>
     <option value="">Select Village</option>
-    <option>Bansdih</option><option>Haldi</option><option>Maniyar</option>
+    <option>Bansdih</option>
+    <option>Maniyar</option>
+    <option>Haldi</option>
   </select>
 
-  <!-- MENU: Cold Drink + 5 Items -->
   <select name="Item Name" id="dish" onchange="calc()" required>
     <option value="">Select Item</option>
     <option data-price="40">Cold Drink - ₹40</option>
-    <option data-price="50">Samosa (2 pcs) - ₹50</option>
-    <option data-price="80">Veg Sandwich - ₹80</option>
+    <option data-price="50">Samosa - ₹50</option>
     <option data-price="120">Veg Chowmein - ₹120</option>
-    <option data-price="150">Veg Biryani - ₹150</option>
-    <option data-price="220">Chicken Biryani - ₹220</option>
   </select>
 
   <input id="qty" name="Quantity" type="number" placeholder="Quantity" oninput="calc()" required>
@@ -81,47 +78,18 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
 </form>
 </div>
 
-<!-- JOB -->
-<div class="card hide" id="job">
-  <h2>💼 Job Apply</h2>
-  <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
-    <input type="hidden" name="_subject" value="Job Apply - Amit Restaurant">
-    <input type="hidden" name="_template" value="table">
-    <input type="hidden" name="_captcha" value="false">
-    <input name="Name" placeholder="Your Name" required>
-    <input name="Mobile" placeholder="Mobile Number" required>
-    <button type="submit">Apply</button>
-  </form>
-</div>
-
-<!-- FEEDBACK -->
-<div class="card hide" id="feedback">
-  <h2>📝 Feedback</h2>
-  <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
-    <input type="hidden" name="_subject" value="Feedback - Amit Restaurant">
-    <input type="hidden" name="_template" value="table">
-    <input type="hidden" name="_captcha" value="false">
-    <input name="Name" placeholder="Your Name" required>
-    <textarea name="Feedback" placeholder="Your feedback..." required></textarea>
-    <button type="submit">Send Feedback</button>
-  </form>
-</div>
-
 <!-- PAYMENT -->
 <div class="card hide" id="pay">
   <h2>💳 Payment (UPI)</h2>
-  <p>UPI: <b>9151041867</b></p>
-  <p>QR Code (Customer ko dikhega)</p>
-  <img id="qrPhoto" src="https://via.placeholder.com/200" alt="UPI QR">
-  <button class="lock" id="changeQRBtn">🔒 Change QR (Owner Only)</button>
+  <p>UPI Number: <b>9151041867</b></p>
+  <!-- QR PHOTO FIXED -->
+  <img id="qrPhoto" src="https://i.postimg.cc/7LsLPMD6/IMG-20260202-WA0000.jpg" alt="UPI QR">
+  <p class="small">Scan QR or pay via UPI number</p>
 </div>
 
 </div>
 
 <div class="footer">Created by <b>Amit Kumar Singh</b> ❤️</div>
-
-<input type="file" id="ownerInput" accept="image/*" hidden>
-<input type="file" id="qrInput" accept="image/*" hidden>
 
 <script>
 function show(id){
@@ -140,49 +108,7 @@ function generateReceipt(){
   const r = "AMIT-" + Date.now();
   document.getElementById("receiptNo").value = r;
 }
-
-const OWNER_PIN="1234"; // 🔐 yahan apna PIN set karo
-const ownerPhoto=document.getElementById("ownerPhoto");
-const qrPhoto=document.getElementById("qrPhoto");
-const ownerInput=document.getElementById("ownerInput");
-const qrInput=document.getElementById("qrInput");
-
-document.getElementById("changeOwnerBtn").onclick=()=>{
-  const pin=prompt("Owner PIN daalein:");
-  if(pin===OWNER_PIN) ownerInput.click();
-  else alert("Wrong PIN!");
-};
-document.getElementById("changeQRBtn").onclick=()=>{
-  const pin=prompt("Owner PIN daalein:");
-  if(pin===OWNER_PIN) qrInput.click();
-  else alert("Wrong PIN!");
-};
-
-ownerInput.onchange=()=>{
-  const f=ownerInput.files[0]; if(!f) return;
-  const r=new FileReader();
-  r.onload=e=>{
-    ownerPhoto.src=e.target.result;
-    localStorage.setItem("ownerPhoto", e.target.result); // ✅ Permanent save
-  };
-  r.readAsDataURL(f);
-};
-qrInput.onchange=()=>{
-  const f=qrInput.files[0]; if(!f) return;
-  const r=new FileReader();
-  r.onload=e=>{
-    qrPhoto.src=e.target.result;
-    localStorage.setItem("qrPhoto", e.target.result); // ✅ Permanent save
-  };
-  r.readAsDataURL(f);
-};
-
-// Load permanent images on page load
-const savedOwner=localStorage.getItem("ownerPhoto");
-if(savedOwner) ownerPhoto.src=savedOwner;
-const savedQR=localStorage.getItem("qrPhoto");
-if(savedQR) qrPhoto.src=savedQR;
 </script>
 
 </body>
-      </html>
+    </html>
