@@ -17,7 +17,6 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
 #ownerPhoto,#qrPhoto{width:120px;height:120px;border-radius:10px;object-fit:cover;border:3px solid #fff}
 .footer{text-align:center;color:#666;margin:20px}
 .hide{display:none}
-.lock{background:#333}
 .small{font-size:12px;color:#777}
 </style>
 </head>
@@ -25,11 +24,9 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
 
 <header>
   <p>Owner Photo</p>
-  <!-- OWNER PHOTO FIXED -->
   <img id="ownerPhoto" src="https://i.postimg.cc/BQyMdRRL/IMG-20260109-205504-644.webp" alt="Owner Photo">
-
   <h1>Amit Restaurant</h1>
-  <marquee>🙏 Meera Jee | Ajay Singh Jee 🙏</marquee>
+  <marquee>🙏Meera singh Jee | Ajay Singh Jee 🙏</marquee>
 </header>
 
 <div class="container">
@@ -55,17 +52,58 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
   <input name="Mobile" placeholder="Mobile Number" required>
 
   <select name="Village" required>
-    <option value="">Select Village</option>
-    <option>Bansdih</option>
-    <option>Maniyar</option>
-    <option>Haldi</option>
+    <option value="">Select Village (Ballia - Bansdih)</option>
+    <option>Ahirauli</option><option>Baheri</option><option>Bansdih</option>
+    <option>Bariyarpur</option><option>Bharouli</option><option>Chandpura</option>
+    <option>Dharhara</option><option>Gauri</option><option>Haldi</option>
+    <option>Haripur</option><option>Jamui</option><option>Kodahara</option>
+    <option>Kujra</option><option>Majhauli</option><option>Maniyar</option>
+    <option>Masumganj</option><option>Nandpur</option><option>Pipra</option>
+    <option>Rajpur</option><option>Reotipur</option><option>Shivpur</option>
+    <option>Sonbarsa</option><option>Surajpura</option><option>Tiyar</option>
+    <option>Ujiar</option><option>Chakki</option><option>Basdila</option>
+    <option>Bhikhampur</option><option>Chotaki seriya</option><option>Dubauli</option>
+    <option>Gaighat</option><option>Haldipur</option><option>Ranai</option>
+    <option>Vidya Bhawan Narayanpur</option><option>Kotwa</option><option>Lilari</option>
   </select>
 
   <select name="Item Name" id="dish" onchange="calc()" required>
     <option value="">Select Item</option>
+    <option data-price="10">Mineral Water - ₹10</option>
     <option data-price="40">Cold Drink - ₹40</option>
-    <option data-price="50">Samosa - ₹50</option>
+    <option data-price="30">Tea - ₹30</option>
+    <option data-price="20">Coffee - ₹20</option>
+    <option data-price="50">Samosa (2 pcs) - ₹50</option>
+    <option data-price="60">Pakora - ₹60</option>
+    <option data-price="80">Veg Sandwich - ₹80</option>
+    <option data-price="90">Veg Burger - ₹90</option>
     <option data-price="120">Veg Chowmein - ₹120</option>
+    <option data-price="140">Veg Fried Rice - ₹140</option>
+    <option data-price="150">Veg Biryani - ₹150</option>
+    <option data-price="180">Paneer Butter Masala - ₹180</option>
+    <option data-price="200">Paneer Tikka - ₹200</option>
+    <option data-price="220">Chicken Biryani - ₹220</option>
+    <option data-price="250">Chicken Curry - ₹250</option>
+    <option data-price="300">Butter Chicken - ₹300</option>
+    <option data-price="90">Roti (2 pcs) - ₹90</option>
+    <option data-price="110">Butter Naan (2 pcs) - ₹110</option>
+    <option data-price="70">Dal Tadka - ₹70</option>
+    <option data-price="80">Jeera Rice - ₹80</option>
+    <option data-price="120">Egg Curry - ₹120</option>
+    <option data-price="250">Chocolate Cake (Half Kg) - ₹250</option>
+    <option data-price="450">Chocolate Cake (1 Kg) - ₹450</option>
+    <option data-price="150">Gulab Jamun - ₹150</option>
+    <option data-price="180">Rasgulla - ₹180</option>
+    <option data-price="60">Ice Cream - ₹60</option>
+    <option data-price="40">Lassi - ₹40</option>
+    <option data-price="35">Buttermilk - ₹35</option>
+    <option data-price="25">Lemon Water - ₹25</option>
+    <option data-price="50">French Fries - ₹50</option>
+    <option data-price="120">Veg Momos - ₹120</option>
+    <option data-price="150">Chicken Momos - ₹150</option>
+    <option data-price="200">Veg Thali - ₹200</option>
+    <option data-price="300">Special Thali - ₹300</option>
+    <option data-price="400">Family Thali - ₹400</option>
   </select>
 
   <input id="qty" name="Quantity" type="number" placeholder="Quantity" oninput="calc()" required>
@@ -78,11 +116,65 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
 </form>
 </div>
 
+<!-- JOB -->
+<div class="card hide" id="job">
+  <h2>💼 Job Apply</h2>
+  <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
+    <input type="hidden" name="_subject" value="Job Apply - Amit Restaurant">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+
+    <input name="Name" placeholder="Your Name" required>
+
+    <select name="Village" required>
+      <option value="">Select Village</option>
+      <option>Ahirauli</option><option>Baheri</option><option>Bansdih</option>
+      <option>Bariyarpur</option><option>Bharouli</option><option>Chandpura</option>
+      <option>Dharhara</option><option>Gauri</option><option>Haldi</option>
+      <option>Haripur</option><option>Jamui</option><option>Kodahara</option>
+      <option>Kujra</option><option>Majhauli</option><option>Maniyar</option>
+      <option>Masumganj</option><option>Nandpur</option><option>Pipra</option>
+      <option>Rajpur</option><option>Reotipur</option><option>Shivpur</option>
+      <option>Sonbarsa</option><option>Surajpura</option><option>Tiyar</option>
+      <option>Ujiar</option><option>Chakki</option><option>Basdila</option>
+      <option>Bhikhampur</option><option>Chorhar</option><option>Dubauli</option>
+      <option>Gaighat</option><option>Haldipur</option><option>Itahi</option>
+      <option>Jagdishpur</option><option>Kotwa</option><option>Lilari</option>
+    </select>
+
+    <select name="Work" required>
+      <option value="">Select Work</option>
+      <option>Cook</option><option>Helper</option><option>Delivery Boy</option>
+      <option>Cashier</option><option>Waiter</option><option>Cleaner</option>
+      <option>Manager</option><option>Tea Maker</option><option>Fast Food Maker</option>
+      <option>Kitchen Boy</option><option>Receptionist</option><option>Billing Staff</option>
+      <option>Store Keeper</option><option>Guard</option><option>Account Helper</option>
+      <option>Online Order Manager</option>
+    </select>
+
+    <input name="Experience" placeholder="Experience (e.g. 1 year / 6 months)" required>
+
+    <button type="submit">Apply</button>
+  </form>
+</div>
+
+<!-- FEEDBACK -->
+<div class="card hide" id="feedback">
+  <h2>📝 Feedback</h2>
+  <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
+    <input type="hidden" name="_subject" value="Feedback - Amit Restaurant">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+    <input name="Name" placeholder="Your Name" required>
+    <textarea name="Feedback" placeholder="Your feedback..." required></textarea>
+    <button type="submit">Send Feedback</button>
+  </form>
+</div>
+
 <!-- PAYMENT -->
 <div class="card hide" id="pay">
   <h2>💳 Payment (UPI)</h2>
   <p>UPI Number: <b>9151041867</b></p>
-  <!-- QR PHOTO FIXED -->
   <img id="qrPhoto" src="https://i.postimg.cc/7LsLPMD6/IMG-20260202-WA0000.jpg" alt="UPI QR">
   <p class="small">Scan QR or pay via UPI number</p>
 </div>
