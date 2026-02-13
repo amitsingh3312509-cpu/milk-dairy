@@ -3,114 +3,108 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Amit Restaurant – Online Order</title>
+<title>Amit Restaurant – All-in-One</title>
 <style>
 body{font-family:Arial;background:#f5f5f5;margin:0}
 header{background:#222;color:#fff;text-align:center;padding:10px}
-.container{max-width:900px;margin:auto;padding:10px}
+.container{max-width:1100px;margin:auto;padding:10px}
 .card{background:#fff;padding:15px;margin:10px 0;border-radius:10px;box-shadow:0 0 8px #ccc}
 h2{color:#e63946}
 input,select,textarea,button{width:100%;padding:8px;margin:5px 0}
-button{background:#e63946;color:#fff;border:none;border-radius:6px}
+button{background:#e63946;color:#fff;border:none;border-radius:6px;cursor:pointer}
 .nav{display:flex;gap:8px;flex-wrap:wrap}
 .nav button{flex:1}
 #ownerPhoto,#qrPhoto{width:120px;height:120px;border-radius:10px;object-fit:cover;border:3px solid #fff}
 .footer{text-align:center;color:#666;margin:20px}
 .hide{display:none}
 .small{font-size:12px;color:#777}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+a.btn{display:block;text-align:center;padding:10px;background:#1a73e8;color:#fff;border-radius:6px;text-decoration:none}
+.total{font-weight:bold;color:#0b8457;font-size:18px}
 </style>
 </head>
 <body>
 
 <header>
-  <p>Owner Photo</p>
   <img id="ownerPhoto" src="https://i.postimg.cc/BQyMdRRL/IMG-20260109-205504-644.webp" alt="Owner Photo">
   <h1>Amit Restaurant</h1>
-  <marquee>🙏 Welcome to Meera singh Jee | Ajay Singh Jee 🙏</marquee>
+  <marquee>🙏 Meera Jee | Ajay Singh Jee 🙏</marquee>
 </header>
 
 <div class="container">
+
+<div class="actions">
+  <a class="btn" href="tel:+917309277213">📞 Call Now</a>
+  <a class="btn" href="https://wa.me/919151041867" target="_blank">💬 WhatsApp</a>
+  <a class="btn" href="#" onclick="window.print()">📄 Menu PDF</a>
+</div>
 
 <div class="nav">
   <button onclick="show('order')">🛒 Order</button>
   <button onclick="show('job')">💼 Job Apply</button>
   <button onclick="show('feedback')">📝 Feedback</button>
   <button onclick="show('pay')">💳 Payment</button>
+  <button onclick="show('saved')">💾 Saved Data</button>
 </div>
 
 <!-- ORDER -->
 <div class="card" id="order">
 <h2>🛒 Online Order</h2>
-<form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST" onsubmit="generateReceipt()">
+<form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST" onsubmit="saveLocal('orders')">
   <input type="hidden" name="_subject" value="🧾 New Order - Amit Restaurant">
   <input type="hidden" name="_template" value="table">
   <input type="hidden" name="_captcha" value="false">
-
-  <input type="hidden" name="Receipt No" id="receiptNo">
 
   <input name="Customer Name" placeholder="Name" required>
   <input name="Mobile" placeholder="Mobile Number" required>
 
   <select name="Village" required>
-    <option value="">Select Village (Ballia - Bansdih)</option>
-    <option>Ahirauli</option><option>Baheri</option><option>Bansdih</option>
-    <option>Bariyarpur</option><option>Bharouli</option><option>Chandpura</option>
-    <option>Dharhara</option><option>Gauri</option><option>Haldi</option>
-    <option>Haripur</option><option>Jamui</option><option>Kodahara</option>
-    <option>Kujra</option><option>Majhauli</option><option>Maniyar</option>
-    <option>Masumganj</option><option>Nandpur</option><option>Pipra</option>
-    <option>Rajpur</option><option>Reotipur</option><option>Shivpur</option>
+    <option value="">गाँव चुनें (Ballia District)</option>
+    <option>Vidya Bhawan Narayanpur</option>
+    <option>Chhotaki Seriya</option>
+    <option>Janpur</option>
+    <option>Purandarpur</option>
+    <option>Mudiyari</option>
+    <option>Ahirauli</option><option>Bansdih</option><option>Bariyarpur</option><option>Bharouli</option>
+    <option>Chandpura</option><option>Dharhara</option><option>Gauri</option><option>Haldi</option>
+    <option>Haripur</option><option>Jamui</option><option>Kodahara</option><option>Kujra</option>
+    <option>Majhauli</option><option>Maniyar</option><option>Masumganj</option><option>Nandpur</option>
+    <option>Pipra</option><option>Rajpur</option><option>Reotipur</option><option>Shivpur</option>
     <option>Sonbarsa</option><option>Surajpura</option><option>Tiyar</option>
-    <option>Ujiar</option><option>Chakki</option><option>Basdila</option>
-    <option>Bhikhampur</option><option>Chotaki seriya</option><option>Dubauli</option>
-    <option>Gaighat</option><option>Haldipur</option><option>Ranai</option>
-    <option>Vidya Bhawan Narayanpur</option><option>Kotwa</option><option>Lilari</option>
+    <option>Utrauli</option><option>Vishunpura</option><option>Wazirpur</option>
+    <option>Xapur</option><option>Yadav Tola</option><option>Zaminpur</option>
   </select>
 
-  <select name="Item Name" id="dish" onchange="calc()" required>
-    <option value="">Select Item</option>
-    <option data-price="10">Mineral Water - ₹10</option>
-    <option data-price="40">Cold Drink - ₹40</option>
-    <option data-price="30">Tea - ₹30</option>
-    <option data-price="20">Coffee - ₹20</option>
-    <option data-price="50">Samosa (2 pcs) - ₹50</option>
-    <option data-price="60">Pakora - ₹60</option>
-    <option data-price="80">Veg Sandwich - ₹80</option>
-    <option data-price="90">Veg Burger - ₹90</option>
-    <option data-price="120">Veg Chowmein - ₹120</option>
-    <option data-price="140">Veg Fried Rice - ₹140</option>
-    <option data-price="150">Veg Biryani - ₹150</option>
-    <option data-price="180">Paneer Butter Masala - ₹180</option>
-    <option data-price="200">Paneer Tikka - ₹200</option>
-    <option data-price="220">Chicken Biryani - ₹220</option>
-    <option data-price="250">Chicken Curry - ₹250</option>
-    <option data-price="300">Butter Chicken - ₹300</option>
-    <option data-price="90">Roti (2 pcs) - ₹90</option>
-    <option data-price="110">Butter Naan (2 pcs) - ₹110</option>
-    <option data-price="70">Dal Tadka - ₹70</option>
-    <option data-price="80">Jeera Rice - ₹80</option>
-    <option data-price="120">Egg Curry - ₹120</option>
-    <option data-price="250">Chocolate Cake (Half Kg) - ₹250</option>
-    <option data-price="450">Chocolate Cake (1 Kg) - ₹450</option>
-    <option data-price="150">Gulab Jamun - ₹150</option>
-    <option data-price="180">Rasgulla - ₹180</option>
-    <option data-price="60">Ice Cream - ₹60</option>
-    <option data-price="40">Lassi - ₹40</option>
-    <option data-price="35">Buttermilk - ₹35</option>
-    <option data-price="25">Lemon Water - ₹25</option>
-    <option data-price="50">French Fries - ₹50</option>
-    <option data-price="120">Veg Momos - ₹120</option>
-    <option data-price="150">Chicken Momos - ₹150</option>
-    <option data-price="200">Veg Thali - ₹200</option>
-    <option data-price="300">Special Thali - ₹300</option>
-    <option data-price="400">Family Thali - ₹400</option>
+  <select name="Item" id="item" onchange="calcTotal()" required>
+    <option value="">Item चुनें</option>
+    <option value="40">Cold Drink ₹40</option>
+    <option value="20">Tea ₹20</option>
+    <option value="30">Coffee ₹30</option>
+    <option value="10">Water ₹10</option>
+    <option value="15">Biscuit ₹15</option>
+    <option value="50">Samosa ₹50</option>
+    <option value="60">Kachori ₹60</option>
+    <option value="30">Bread Butter ₹30</option>
+    <option value="40">Poha ₹40</option>
+    <option value="50">Upma ₹50</option>
+    <option value="70">Veg Sandwich ₹70</option>
+    <option value="90">Paneer Roll ₹90</option>
+    <option value="120">Veg Chowmein ₹120</option>
+    <option value="130">Veg Fried Rice ₹130</option>
+    <option value="150">Veg Biryani ₹150</option>
+    <option value="160">Paneer Biryani ₹160</option>
+    <option value="180">Paneer Butter Masala ₹180</option>
+    <option value="200">Dal Tadka ₹200</option>
+    <option value="220">Chicken Biryani ₹220</option>
+    <option value="250">Chicken Curry ₹250</option>
+    <option value="300">Butter Chicken ₹300</option>
+    <option value="400">Family Thali ₹400</option>
   </select>
 
-  <input id="qty" name="Quantity" type="number" placeholder="Quantity" oninput="calc()" required>
-  <input type="time" name="Delivery Time" required>
+  <input name="Qty" id="qty" type="number" placeholder="Quantity" min="1" value="1" oninput="calcTotal()" required>
 
-  <input type="hidden" id="totalInput" name="Total Price">
-  <p><b>Total:</b> <span id="total">₹0</span></p>
+  <p class="total">Total: ₹ <span id="total">0</span></p>
+  <input type="hidden" name="Total Price" id="totalHidden">
 
   <button type="submit">Order Now</button>
 </form>
@@ -119,41 +113,33 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
 <!-- JOB -->
 <div class="card hide" id="job">
   <h2>💼 Job Apply</h2>
-  <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
+  <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST" onsubmit="saveLocal('jobs')">
     <input type="hidden" name="_subject" value="Job Apply - Amit Restaurant">
     <input type="hidden" name="_template" value="table">
     <input type="hidden" name="_captcha" value="false">
 
     <input name="Name" placeholder="Your Name" required>
+    <input name="Mobile" placeholder="Mobile Number" required>
 
     <select name="Village" required>
-      <option value="">Select Village</option>
-      <option>Ahirauli</option><option>Baheri</option><option>Bansdih</option>
-      <option>Bariyarpur</option><option>Bharouli</option><option>Chandpura</option>
-      <option>Dharhara</option><option>Gauri</option><option>Haldi</option>
-      <option>Haripur</option><option>Jamui</option><option>Kodahara</option>
-      <option>Kujra</option><option>Majhauli</option><option>Maniyar</option>
-      <option>Masumganj</option><option>Nandpur</option><option>Pipra</option>
-      <option>Rajpur</option><option>Reotipur</option><option>Shivpur</option>
-      <option>Sonbarsa</option><option>Surajpura</option><option>Tiyar</option>
-      <option>Ujiar</option><option>Chakki</option><option>Basdila</option>
-      <option>Bhikhampur</option><option>Chorhar</option><option>Dubauli</option>
-      <option>Gaighat</option><option>Haldipur</option><option>Itahi</option>
-      <option>Jagdishpur</option><option>Kotwa</option><option>Lilari</option>
+      <option value="">गाँव चुनें</option>
+      <option>Vidya Bhawan Narayanpur</option>
+      <option>Chhotaki Seriya</option>
+      <option>Janpur</option>
+      <option>Purandarpur</option>
+      <option>Mudiyari</option>
+      <option>Ahirauli</option><option>Bansdih</option><option>Bariyarpur</option><option>Bharouli</option>
     </select>
 
     <select name="Work" required>
-      <option value="">Select Work</option>
-      <option>Cook</option><option>Helper</option><option>Delivery Boy</option>
-      <option>Cashier</option><option>Waiter</option><option>Cleaner</option>
-      <option>Manager</option><option>Tea Maker</option><option>Fast Food Maker</option>
-      <option>Kitchen Boy</option><option>Receptionist</option><option>Billing Staff</option>
-      <option>Store Keeper</option><option>Guard</option><option>Account Helper</option>
-      <option>Online Order Manager</option>
+      <option value="">काम चुनें</option>
+      <option>Cook</option><option>Helper</option><option>Delivery Boy</option><option>Cashier</option>
+      <option>Cleaner</option><option>Waiter</option><option>Manager</option><option>Tea Maker</option>
+      <option>Reception</option><option>Kitchen Boy</option><option>Guard</option><option>Driver</option>
+      <option>Store Keeper</option><option>Account Helper</option><option>Supervisor</option>
     </select>
 
-    <input name="Experience" placeholder="Experience (e.g. 1 year / 6 months)" required>
-
+    <input name="Experience" placeholder="Experience (e.g. 1 year)">
     <button type="submit">Apply</button>
   </form>
 </div>
@@ -161,7 +147,7 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
 <!-- FEEDBACK -->
 <div class="card hide" id="feedback">
   <h2>📝 Feedback</h2>
-  <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST">
+  <form action="https://formsubmit.co/d896b06d8ff17da94daf546eda56d034" method="POST" onsubmit="saveLocal('feedbacks')">
     <input type="hidden" name="_subject" value="Feedback - Amit Restaurant">
     <input type="hidden" name="_template" value="table">
     <input type="hidden" name="_captcha" value="false">
@@ -179,6 +165,12 @@ button{background:#e63946;color:#fff;border:none;border-radius:6px}
   <p class="small">Scan QR or pay via UPI number</p>
 </div>
 
+<!-- SAVED -->
+<div class="card hide" id="saved">
+  <h2>💾 Saved Data (This Device)</h2>
+  <pre id="dump"></pre>
+</div>
+
 </div>
 
 <div class="footer">Created by <b>Amit Kumar Singh</b> ❤️</div>
@@ -188,19 +180,34 @@ function show(id){
   document.querySelectorAll('.card').forEach(c=>c.classList.add('hide'));
   document.getElementById(id).classList.remove('hide');
 }
-function calc(){
-  const dish=document.getElementById('dish');
-  const price=dish.options[dish.selectedIndex]?.getAttribute('data-price')||0;
-  const qty=document.getElementById('qty').value||0;
-  const total=price*qty;
-  document.getElementById('total').innerText="₹"+total;
-  document.getElementById('totalInput').value="₹"+total;
+
+function calcTotal(){
+  const price = parseInt(document.getElementById('item').value||0);
+  const qty = parseInt(document.getElementById('qty').value||0);
+  const total = price * qty;
+  document.getElementById('total').innerText = total;
+  document.getElementById('totalHidden').value = total;
 }
-function generateReceipt(){
-  const r = "AMIT-" + Date.now();
-  document.getElementById("receiptNo").value = r;
+
+function saveLocal(key){
+  const form = event.target;
+  const data = Object.fromEntries(new FormData(form).entries());
+  const list = JSON.parse(localStorage.getItem(key)||"[]");
+  list.push({...data, time:new Date().toLocaleString()});
+  localStorage.setItem(key, JSON.stringify(list));
+  setTimeout(()=>renderSaved(), 300);
 }
+
+function renderSaved(){
+  const all = {
+    orders: JSON.parse(localStorage.getItem('orders')||"[]"),
+    jobs: JSON.parse(localStorage.getItem('jobs')||"[]"),
+    feedbacks: JSON.parse(localStorage.getItem('feedbacks')||"[]"),
+  };
+  document.getElementById('dump').textContent = JSON.stringify(all, null, 2);
+}
+renderSaved();
 </script>
 
 </body>
-  </html>
+    </html>
