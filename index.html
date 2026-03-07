@@ -1,20 +1,46 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-<title>Amantran Restaurant Order</title>
+<title>Amantran Restaurant Bansdih Order</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:linear-gradient(45deg,#ff6a00,#ee0979);
+text-align:center;
+color:white;
+}
+
+form{
+background:white;
+color:black;
+padding:20px;
+width:350px;
+margin:auto;
+border-radius:10px;
+box-shadow:0 0 10px gray;
+}
+
+input,select{
+width:100%;
+padding:8px;
+margin:6px 0;
+}
+
+button{
+background:#28a745;
+color:white;
+border:none;
+padding:10px;
+width:100%;
+font-size:16px;
+border-radius:5px;
+}
+
+</style>
 
 <script>
-
-function setDateTime(){
-
-let now=new Date()
-
-document.getElementById("date").value=now.toLocaleDateString()
-document.getElementById("day").value=now.toLocaleString('en-us',{weekday:'long'})
-document.getElementById("time").value=now.toLocaleTimeString()
-
-}
 
 function calculate(){
 
@@ -32,8 +58,21 @@ let advance=total/2
 
 document.getElementById("advance").value=advance
 
-document.getElementById("paylink").href=
-"upi://pay?pa=7309277213@ibl&pn=Amantran%20Restaurant&am="+advance+"&cu=INR"
+}
+
+function payAndSubmit(){
+
+let advance=document.getElementById("advance").value
+
+let upi="upi://pay?pa=7309277213@ibl&pn=Amantran%20Restaurant&am="+advance+"&cu=INR"
+
+window.location.href=upi
+
+setTimeout(function(){
+
+document.getElementById("orderform").submit()
+
+},2000)
 
 }
 
@@ -41,91 +80,57 @@ document.getElementById("paylink").href=
 
 </head>
 
-<body onload="setDateTime()">
+<body>
 
-<h2>Amantran Restaurant Order</h2>
+<h1>Amantran Restaurant</h1>
 
-<form action="https://formsubmit.co/amitsingh3312509@gmail.com" method="POST">
+<form id="orderform" action="https://formsubmit.co/amitsingh3312509@gmail.com" method="POST">
 
 <input type="hidden" name="_captcha" value="false">
 
 Name
-<br>
 <input type="text" name="Customer Name" required>
 
-<br><br>
-
 Mobile
-<br>
 <input type="text" name="Mobile" required>
 
-<br><br>
+Village
+<select name="Village Name">
+
+<option>Ballia</option>
+<option>Bansdih</option>
+<option>Maniyar</option>
+<option>Sahatwar</option>
+<option>Reoti</option>
+<option>Bairia</option>
+
+</select>
 
 Food Item
-<br>
-
 <select id="food" name="Food Name" onchange="calculate()">
 
 <option data-price="100">Veg Burger ₹100</option>
 <option data-price="120">Paneer Butter Masala ₹120</option>
 <option data-price="150">Chicken Curry ₹150</option>
 <option data-price="80">Veg Noodles ₹80</option>
+<option data-price="60">Chowmein ₹60</option>
 
 </select>
 
-<br><br>
-
 Piece
-<br>
-
 <input type="number" id="piece" name="Piece" value="1" onchange="calculate()">
 
-<br><br>
-
 Total Price
-<br>
-
 <input type="text" id="total" name="Total Price" readonly>
 
-<br><br>
-
 Advance (50%)
-<br>
-
 <input type="text" id="advance" name="Advance Price" readonly>
 
 <br><br>
 
-Date
-<br>
-
-<input type="text" id="date" name="Date">
-
-<br><br>
-
-Day
-<br>
-
-<input type="text" id="day" name="Day">
-
-<br><br>
-
-Time
-<br>
-
-<input type="text" id="time" name="Time">
-
-<br><br>
-
-<button type="submit">Order Send</button>
-
-<br><br>
-
-<a id="paylink" href="upi://pay?pa=7309277213@ibl&pn=Amantran%20Restaurant&am=50&cu=INR">
-
-<button type="button">Pay Advance</button>
-
-</a>
+<button type="button" onclick="payAndSubmit()">
+Pay & Submit Order
+</button>
 
 </form>
 
