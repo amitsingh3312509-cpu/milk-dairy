@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Amantran Restaurant Bansdih Order</title>
+
+<title>Amantran Restaurant</title>
 
 <style>
 
 body{
 font-family:Arial;
-background:linear-gradient(45deg,#ff6a00,#ee0979);
+background:linear-gradient(45deg,#ff512f,#dd2476);
 text-align:center;
 color:white;
+}
+
+h1{
+font-size:40px;
 }
 
 form{
 background:white;
 color:black;
-padding:20px;
 width:350px;
 margin:auto;
+padding:20px;
 border-radius:10px;
 box-shadow:0 0 10px gray;
 }
@@ -26,21 +31,40 @@ input,select{
 width:100%;
 padding:8px;
 margin:6px 0;
+border-radius:5px;
+border:1px solid gray;
 }
 
 button{
 background:#28a745;
 color:white;
-border:none;
 padding:10px;
+border:none;
 width:100%;
 font-size:16px;
 border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#218838;
 }
 
 </style>
 
 <script>
+
+function setDateTime(){
+
+let now=new Date()
+
+document.getElementById("date").value=now.toLocaleDateString()
+
+document.getElementById("day").value=now.toLocaleString('en-us',{weekday:'long'})
+
+document.getElementById("time").value=now.toLocaleTimeString()
+
+}
 
 function calculate(){
 
@@ -48,9 +72,9 @@ let food=document.getElementById("food")
 
 let price=parseInt(food.options[food.selectedIndex].getAttribute("data-price"))
 
-let piece=document.getElementById("piece").value
+let qty=document.getElementById("qty").value
 
-let total=price*piece
+let total=price*qty
 
 document.getElementById("total").value=total
 
@@ -66,13 +90,17 @@ let advance=document.getElementById("advance").value
 
 let upi="upi://pay?pa=7309277213@ibl&pn=Amantran%20Restaurant&am="+advance+"&cu=INR"
 
+alert("Please complete the payment. After payment your order will be submitted.")
+
 window.location.href=upi
 
 setTimeout(function(){
 
+alert("Payment assumed completed. Submitting order...")
+
 document.getElementById("orderform").submit()
 
-},2000)
+},4000)
 
 }
 
@@ -80,7 +108,7 @@ document.getElementById("orderform").submit()
 
 </head>
 
-<body>
+<body onload="setDateTime()">
 
 <h1>Amantran Restaurant</h1>
 
@@ -114,11 +142,18 @@ Food Item
 <option data-price="150">Chicken Curry ₹150</option>
 <option data-price="80">Veg Noodles ₹80</option>
 <option data-price="60">Chowmein ₹60</option>
+<option data-price="200">Paneer Pizza ₹200</option>
 
 </select>
 
-Piece
-<input type="number" id="piece" name="Piece" value="1" onchange="calculate()">
+Plate / Piece
+<select name="Type">
+<option>Plate</option>
+<option>Piece</option>
+</select>
+
+Quantity
+<input type="number" id="qty" name="Quantity" value="1" onchange="calculate()">
 
 Total Price
 <input type="text" id="total" name="Total Price" readonly>
@@ -126,10 +161,19 @@ Total Price
 Advance (50%)
 <input type="text" id="advance" name="Advance Price" readonly>
 
+Date
+<input type="text" id="date" name="Date" readonly>
+
+Day
+<input type="text" id="day" name="Day" readonly>
+
+Time
+<input type="text" id="time" name="Time" readonly>
+
 <br><br>
 
 <button type="button" onclick="payAndSubmit()">
-Pay & Submit Order
+Pay & Confirm Order
 </button>
 
 </form>
