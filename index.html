@@ -1,182 +1,148 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-<title>Amantran Restaurant</title>
-
+<title>Amantran Restaurant Order</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-
 body{
-font-family:Arial;
-background:linear-gradient(45deg,#ff512f,#dd2476);
-text-align:center;
-color:white;
+  font-family:Arial;
+  background:linear-gradient(45deg,#ff9966,#ff5e62);
+  text-align:center;
 }
-
+.container{
+  background:white;
+  padding:20px;
+  margin:auto;
+  width:350px;
+  border-radius:10px;
+}
 h1{
-font-size:40px;
+  color:red;
 }
-
-form{
-background:white;
-color:black;
-width:350px;
-margin:auto;
-padding:20px;
-border-radius:10px;
-box-shadow:0 0 10px gray;
+input, select, button{
+  width:95%;
+  padding:10px;
+  margin:5px 0;
 }
-
-input,select{
-width:100%;
-padding:8px;
-margin:6px 0;
-border-radius:5px;
-border:1px solid gray;
-}
-
 button{
-background:#28a745;
-color:white;
-padding:10px;
-border:none;
-width:100%;
-font-size:16px;
-border-radius:5px;
-cursor:pointer;
+  background:green;
+  color:white;
+  border:none;
+  width:100%;
+  font-size:18px;
+  cursor:pointer;
 }
-
-button:hover{
-background:#218838;
-}
-
 </style>
-
-<script>
-
-function setDateTime(){
-
-let now=new Date()
-
-document.getElementById("date").value=now.toLocaleDateString()
-
-document.getElementById("day").value=now.toLocaleString('en-us',{weekday:'long'})
-
-document.getElementById("time").value=now.toLocaleTimeString()
-
-}
-
-function calculate(){
-
-let food=document.getElementById("food")
-
-let price=parseInt(food.options[food.selectedIndex].getAttribute("data-price"))
-
-let qty=document.getElementById("qty").value
-
-let total=price*qty
-
-document.getElementById("total").value=total
-
-let advance=total/2
-
-document.getElementById("advance").value=advance
-
-}
-
-function payAndSubmit(){
-
-let advance=document.getElementById("advance").value
-
-let upi="upi://pay?pa=rakeshpandeyrakesh27-1@okhdfcbank&pn=Amantran%20Restaurant&am="+advance+"&cu=INR"
-
-alert("Please complete the payment. After payment your order will be submitted.")
-
-window.location.href=upi
-
-setTimeout(function(){
-
-alert("Payment assumed completed. Submitting order...")
-
-document.getElementById("orderform").submit()
-
-},4000)
-
-}
-
-</script>
-
 </head>
+<body>
 
-<body onload="setDateTime()">
-
+<div class="container">
 <h1>Amantran Restaurant</h1>
 
 <form id="orderform" action="https://formsubmit.co/amitsingh3312509@gmail.com" method="POST">
-
 <input type="hidden" name="_captcha" value="false">
 
-Name
-<input type="text" name="Customer Name" required>
+<label>Name</label><br>
+<input type="text" name="Customer Name" required><br>
 
-Mobile
-<input type="text" name="Mobile" required>
+<label>Mobile</label><br>
+<input type="text" name="Mobile" required><br>
 
-Village
-<select name="Village Name">
+<label>Village</label><br>
+<input type="text" name="Village"><br>
 
-<option>Ballia</option>
-<option>Bansdih</option>
-<option>Maniyar</option>
-<option>Sahatwar</option>
-<option>Reoti</option>
-<option>Bairia</option>
-
+<label>Food Item</label><br>
+<select id="food" name="Food Name" onchange="price()">
+<option value="Veg Sandwich" data-price="80">Veg Sandwich 80</option>
+<option value="Veg Burger" data-price="60">Veg Burger 60</option>
+<option value="Paneer Burger" data-price="70">Paneer Burger 70</option>
+<option value="Masala Dosa" data-price="110">Masala Dosa 110</option>
+<option value="Paneer Butter Masala" data-price="180">Paneer Butter Masala 180</option>
+<option value="Chicken Biryani" data-price="260">Chicken Biryani 260</option>
 </select>
 
-Food Item
-<select id="food" name="Food Name" onchange="calculate()">
+<br><br>
 
-<option data-price="100">Veg Burger ₹100</option>
-<option data-price="120">Paneer Butter Masala ₹120</option>
-<option data-price="150">Chicken Curry ₹150</option>
-<option data-price="80">Veg Noodles ₹80</option>
-<option data-price="60">Chowmein ₹60</option>
-<option data-price="200">Paneer Pizza ₹200</option>
-
-</select>
-
-Plate / Piece
+<label>Plate / Piece</label><br>
 <select name="Type">
 <option>Plate</option>
 <option>Piece</option>
 </select>
 
-Quantity
-<input type="number" id="qty" name="Quantity" value="1" onchange="calculate()">
+<br><br>
 
-Total Price
-<input type="text" id="total" name="Total Price" readonly>
-
-Advance (50%)
-<input type="text" id="advance" name="Advance Price" readonly>
-
-Date
-<input type="text" id="date" name="Date" readonly>
-
-Day
-<input type="text" id="day" name="Day" readonly>
-
-Time
-<input type="text" id="time" name="Time" readonly>
+<label>Quantity</label><br>
+<input type="number" id="qty" value="1" onchange="price()">
 
 <br><br>
 
-<button type="button" onclick="payAndSubmit()">
-Pay & Confirm Order
-</button>
+<label>Total</label><br>
+<input type="text" id="total" name="Total" readonly>
+
+<br><br>
+
+<label>Advance (50%)</label><br>
+<input type="text" id="advance" name="Advance">
+
+<br><br>
+
+<label>Date</label><br>
+<input type="text" id="date" name="Date" readonly><br>
+
+<label>Day</label><br>
+<input type="text" id="day" name="Day" readonly><br>
+
+<label>Time</label><br>
+<input type="text" id="time" name="Time" readonly><br>
+
+<!-- Transaction ID Field -->
+<label>UPI Transaction ID</label><br>
+<input type="text" name="UPI Transaction ID" placeholder="Enter UPI Payment ID" required><br>
+
+<input type="hidden" id="receipt" name="Receipt Number">
+
+<button type="button" onclick="pay()">Pay & Confirm Order</button>
 
 </form>
+</div>
+
+<script>
+function price(){
+  var food = document.getElementById("food");
+  var price = food.options[food.selectedIndex].dataset.price;
+  var qty = document.getElementById("qty").value;
+  var total = price * qty;
+  document.getElementById("total").value = total;
+  document.getElementById("advance").value = total / 2;
+}
+
+// Auto fill Date, Day, Time
+var d = new Date();
+document.getElementById("date").value = d.toLocaleDateString();
+document.getElementById("day").value = d.toLocaleString('en-us',{weekday:'long'});
+document.getElementById("time").value = d.toLocaleTimeString();
+
+// Generate Receipt Number
+var receiptNum = "AMT" + Math.floor(Math.random()*900000 + 100000);
+document.getElementById("receipt").value = receiptNum;
+
+// UPI Payment + guide user to enter Transaction ID
+function pay(){
+  var advance = document.getElementById("advance").value;
+  var upi = "upi://pay?pa=rakeshpandeyrakesh27-1@okhdfcbank&pn=AmantranRestaurant&am="+advance+"&cu=INR";
+  
+  // Open UPI app on phone
+  window.location.href = upi;
+
+  alert("Please complete payment in your UPI app. After payment, copy the Transaction ID and paste it in the 'UPI Transaction ID' field, then click 'Pay & Confirm Order' again.");
+
+  // Form will be submitted only after customer enters Transaction ID and presses button again
+  // (So owner will get email with payment proof)
+  if(document.querySelector("input[name='UPI Transaction ID']").value !== ""){
+    document.getElementById("orderform").submit();
+  }
+}
+</script>
 
 </body>
-  </html>
+                                                                                </html>
