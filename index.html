@@ -1,151 +1,241 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Amantran Restaurant Order</title>
+<title>Royal Pizza Home Order</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
+
 body{
-  font-family:Arial;
-  background:linear-gradient(45deg,#ff9966,#ff5e62);
-  text-align:center;
+font-family:Arial;
+background:linear-gradient(135deg,#ff512f,#dd2476);
+margin:0;
 }
+
 .container{
-  background:white;
-  padding:20px;
-  margin:auto;
-  width:350px;
-  border-radius:10px;
+max-width:520px;
+margin:20px auto;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.3);
 }
-h1{
-  color:red;
+
+h2{
+text-align:center;
+color:#dd2476;
 }
-input, select, button{
-  width:95%;
-  padding:10px;
-  margin:5px 0;
+
+label{
+font-weight:bold;
 }
+
+input,select,textarea{
+width:100%;
+padding:10px;
+margin:6px 0;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
 button{
-  background:green;
-  color:white;
-  border:none;
-  width:100%;
-  font-size:18px;
-  cursor:pointer;
+width:100%;
+padding:12px;
+border:none;
+border-radius:6px;
+margin-top:8px;
+font-size:16px;
 }
+
+.pay{
+background:green;
+color:white;
+}
+
+.submit{
+background:#dd2476;
+color:white;
+}
+
+.submit:disabled{
+background:gray;
+}
+
+.info{
+background:#f2f2f2;
+padding:10px;
+border-radius:6px;
+margin:10px 0;
+}
+
+.total{
+font-size:18px;
+color:green;
+font-weight:bold;
+text-align:center;
+}
+
 </style>
+
 </head>
+
 <body>
 
 <div class="container">
-<h1>Amantran Restaurant</h1>
 
-<form id="orderform" action="https://formsubmit.co/amitsingh3312509@gmail.com" method="POST">
-<input type="hidden" name="_captcha" value="false">
+<h2>🍕 Royal Pizza Home</h2>
 
-<label>Name</label><br>
-<input type="text" name="Customer Name" required><br>
+<form action="https://formsubmit.co/amitsingh3312509@gmail.com" method="POST">
 
-<label>Mobile</label><br>
-<input type="text" name="Mobile" required><br>
+<label>Name / नाम</label>
+<input type="text" name="Customer Name" required>
 
-<label>Village</label><br>
-<input type="text" name="Village"><br>
+<label>Mobile Number / मोबाइल नंबर</label>
+<input type="tel" name="Mobile Number" required>
 
-<label>Food Item</label><br>
-<select id="food" name="Food Name" onchange="updatePrice()">
-<option value="Veg Sandwich" data-price="80">Veg Sandwich - ₹80</option>
-<option value="Veg Burger" data-price="60">Veg Burger - ₹60</option>
-<option value="Paneer Burger" data-price="70">Paneer Burger - ₹70</option>
-<option value="Masala Dosa" data-price="110">Masala Dosa - ₹110</option>
-<option value="Paneer Butter Masala" data-price="180">Paneer Butter Masala - ₹180</option>
-<option value="Chicken Biryani" data-price="260">Chicken Biryani - ₹260</option>
+<label>Village / गांव</label>
+<input type="text" name="Village">
+
+<label>Select Pizza / पिज़्ज़ा चुनें</label>
+
+<select id="pizza" onchange="calculate()" name="Pizza">
+
+<option value="">Select</option>
+
+<option value="150">
+Margherita Pizza / मार्घेरिटा ₹150
+</option>
+
+<option value="180">
+Veg Pizza / वेज पिज़्ज़ा ₹180
+</option>
+
+<option value="200">
+Paneer Pizza / पनीर पिज़्ज़ा ₹200
+</option>
+
+<option value="250">
+Farmhouse Pizza / फार्महाउस ₹250
+</option>
+
 </select>
 
-<br><br>
+<label>Quantity / मात्रा</label>
+<input type="number" id="qty" value="1" min="1" onchange="calculate()" name="Quantity">
 
-<label>Plate / Piece</label><br>
-<select name="Type">
-<option>Plate</option>
-<option>Piece</option>
+<label>Unit / प्रकार</label>
+
+<select name="Unit">
+
+<option>Piece / पीस</option>
+<option>Plate / प्लेट</option>
+
 </select>
 
-<br><br>
+<div class="total">
+Total Amount ₹ <span id="total">0</span>
+</div>
 
-<label>Quantity</label><br>
-<input type="number" id="qty" value="1" onchange="updatePrice()">
+<div class="total">
+Advance 50% ₹ <span id="advance">0</span>
+</div>
 
-<br><br>
+<input type="hidden" name="Total Amount" id="totalInput">
+<input type="hidden" name="Advance Payment" id="advanceInput">
 
-<label>Unit Price (Food Rate)</label><br>
-<input type="text" id="unitPrice" name="Food Rate" readonly>
+<div class="info">
 
-<br><br>
+<p><b>Date:</b> <span id="date"></span></p>
+<p><b>Time:</b> <span id="time"></span></p>
+<p><b>Day:</b> <span id="day"></span></p>
+<p><b>Receipt No:</b> <span id="receipt"></span></p>
 
-<label>Total</label><br>
-<input type="text" id="total" name="Total" readonly>
+</div>
 
-<br><br>
+<input type="hidden" name="Date" id="dateInput">
+<input type="hidden" name="Time" id="timeInput">
+<input type="hidden" name="Day" id="dayInput">
+<input type="hidden" name="Receipt No" id="receiptInput">
 
-<label>Advance (50%)</label><br>
-<input type="text" id="advance" name="Advance">
+<h3>UPI Payment</h3>
 
-<br><br>
+<p>UPI ID: 7309277213@ibl</p>
 
-<label>Date</label><br>
-<input type="text" id="date" name="Date" readonly><br>
+<button type="button" class="pay" onclick="payNow()">
+Pay 50% Advance
+</button>
 
-<label>Day</label><br>
-<input type="text" id="day" name="Day" readonly><br>
-
-<label>Time</label><br>
-<input type="text" id="time" name="Time" readonly><br>
-
-<label>UPI Transaction ID</label><br>
-<input type="text" name="UPI Transaction ID" placeholder="Enter UPI Payment ID" required><br>
-
-<input type="hidden" id="receipt" name="Receipt Number">
-
-<button type="button" onclick="pay()">Pay & Confirm Order</button>
+<button type="submit" class="submit" id="submitBtn" disabled>
+Place Order
+</button>
 
 </form>
+
 </div>
 
 <script>
-function updatePrice(){
-  var food = document.getElementById("food");
-  var unitPrice = food.options[food.selectedIndex].dataset.price;
-  var qty = document.getElementById("qty").value;
-  var total = unitPrice * qty;
 
-  document.getElementById("unitPrice").value = unitPrice; // Food Rate
-  document.getElementById("total").value = total;
-  document.getElementById("advance").value = total / 2;
+function calculate(){
+
+var pizza=document.getElementById("pizza").value;
+var qty=document.getElementById("qty").value;
+
+var total=pizza*qty;
+
+document.getElementById("total").innerHTML=total;
+
+var adv=Math.round(total/2);
+
+document.getElementById("advance").innerHTML=adv;
+
+document.getElementById("totalInput").value=total;
+document.getElementById("advanceInput").value=adv;
+
 }
 
-// Auto fill Date, Day, Time
-var d = new Date();
-document.getElementById("date").value = d.toLocaleDateString();
-document.getElementById("day").value = d.toLocaleString('en-us',{weekday:'long'});
-document.getElementById("time").value = d.toLocaleTimeString();
+function payNow(){
 
-// Generate Receipt Number
-var receiptNum = "AMT" + Math.floor(Math.random()*900000 + 100000);
-document.getElementById("receipt").value = receiptNum;
+var adv=document.getElementById("advanceInput").value;
 
-// UPI Payment + manual transaction ID
-function pay(){
-  var advance = document.getElementById("advance").value;
-  var upi = "upi://pay?pa=rakeshpandeyrakesh27-1@okhdfcbank&pn=AmantranRestaurant&am="+advance+"&cu=INR";
-  
-  // Open UPI app
-  window.location.href = upi;
+if(adv==0){
 
-  alert("Please complete payment in your UPI app. After payment, copy Transaction ID and paste in 'UPI Transaction ID' field, then click button again.");
+alert("Please select pizza first");
 
-  if(document.querySelector("input[name='UPI Transaction ID']").value !== ""){
-    document.getElementById("orderform").submit();
-  }
+return;
+
 }
+
+var upi="upi://pay?pa=yourupi@upi&pn=RoyalPizzaHome&am="+adv+"&cu=INR";
+
+window.location.href=upi;
+
+setTimeout(function(){
+
+alert("Payment done. Now place order.");
+
+document.getElementById("submitBtn").disabled=false;
+
+},3000);
+
+}
+
+var d=new Date();
+
+var days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+document.getElementById("date").innerText=d.toLocaleDateString();
+document.getElementById("time").innerText=d.toLocaleTimeString();
+document.getElementById("day").innerText=days[d.getDay()];
+
+document.getElementById("dateInput").value=d.toLocaleDateString();
+document.getElementById("timeInput").value=d.toLocaleTimeString();
+document.getElementById("dayInput").value=days[d.getDay()];
+
+var receipt="RP"+Math.floor(Math.random()*1000000);
+
+document.getElementById("receipt").innerText=receipt;
+document.getElementById("receiptInput").value=receipt;
+
 </script>
 
 </body>
