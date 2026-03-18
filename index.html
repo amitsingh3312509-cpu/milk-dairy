@@ -35,8 +35,6 @@ border:none;width:100%;border-radius:6px;margin-top:6px;
 
 .note{color:red;font-weight:bold;text-align:center;}
 
-.qr{width:200px;display:block;margin:auto;}
-
 .bottom{
 position:fixed;bottom:10px;left:50%;
 transform:translateX(-50%);
@@ -67,7 +65,7 @@ text-decoration:none;font-size:14px;
 
 <select id="pizza">
 <option value="">Select Pizza / चुनें</option>
-<option value="2">Veg ₹2</option>
+<option value="150">Veg ₹150</option>
 <option value="200">Paneer ₹200</option>
 <option value="250">Cheese ₹250</option>
 </select>
@@ -82,25 +80,26 @@ text-decoration:none;font-size:14px;
 <p>Advance ₹ <span id="adv">0</span></p>
 </div>
 
-<h3>Customer / ग्राहक</h3>
+<h3>Customer Details / ग्राहक जानकारी</h3>
 
 <input id="name" placeholder="Name / नाम">
 <input id="mobile" placeholder="Mobile / मोबाइल">
 <input id="village" placeholder="Village / गांव">
 
 <p class="note">
-⚠️ 50% advance compulsory / 50% भुगतान जरूरी
+⚠️ Open app and pay manually  
+⚠️ ऐप खोलकर खुद भुगतान करें (कम से कम 50%)
 </p>
 
-<h3>Payment Options / भुगतान विकल्प</h3>
+<h3>Payment</h3>
 
-<button onclick="payUPI()">📱 Pay via UPI ID</button>
-<button onclick="payNumber()">📱 Pay via Mobile Number</button>
+<button onclick="openGpay()">📱 Open Google Pay</button>
+<button onclick="openPhonePe()">📱 Open PhonePe</button>
 
-<img class="qr"
-src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=7309277213@ibl&pn=RoyalPizzaHome&cu=INR">
-
-<p style="text-align:center;">Scan QR / QR स्कैन करें</p>
+<p style="text-align:center;">
+UPI ID: <b>7309277213@ibl</b><br>
+Mobile: <b>7309277213</b>
+</p>
 
 <input id="txn" placeholder="Transaction ID / ट्रांजैक्शन आईडी">
 
@@ -111,7 +110,7 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=
 </div>
 
 <div class="bottom">
-<a class="whatsapp" id="wa">WhatsApp</a>
+<a class="whatsapp" href="https://wa.me/917309277213">WhatsApp</a>
 <a class="call" href="tel:7309277213">Call</a>
 </div>
 
@@ -147,19 +146,18 @@ document.getElementById("adv").innerText=Math.round(total/2);
 
 /* REMOVE */
 function removeItem(i){
-total-=cart[i].price*cart[i].q;
+total-=cart[i].price*carts[i]?.q || 0;
 cart.splice(i,1);
 showCart();
 }
 
-/* UPI ID */
-function payUPI(){
-window.location.href="upi://pay?pa=7309277213@ibl&pn=RoyalPizzaHome&cu=INR";
+/* OPEN APPS */
+function openGpay(){
+window.location.href="tez://";
 }
 
-/* MOBILE */
-function payNumber(){
-window.location.href="upi://pay?pa=7309277213@upi&pn=RoyalPizzaHome&cu=INR";
+function openPhonePe(){
+window.location.href="phonepe://";
 }
 
 /* ORDER */
@@ -175,9 +173,12 @@ alert("Fill all details");
 return;
 }
 
-let msg="🍕 Order\nName:"+name+"\nMobile:"+mobile+
-"\nVillage:"+village+"\nItems:"+JSON.stringify(cart)+
-"\nTotal ₹"+total+"\nTxn:"+txn;
+let msg="🍕 Order\nName:"+name+
+"\nMobile:"+mobile+
+"\nVillage:"+village+
+"\nItems:"+JSON.stringify(cart)+
+"\nTotal ₹"+total+
+"\nTxn:"+txn;
 
 window.open("https://wa.me/917309277213?text="+encodeURIComponent(msg));
 
