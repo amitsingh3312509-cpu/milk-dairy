@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>Royal Pizza Home</title>
+<title>Royal Pizza Home - Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -13,7 +13,7 @@ body{margin:0;font-family:Arial;background:#f2f2f2;}
 
 .header{
 background:#ff3b3b;color:white;text-align:center;
-padding:15px;font-size:22px;
+padding:15px;font-size:22px;font-weight:bold;
 }
 
 .container{
@@ -31,9 +31,8 @@ border:none;width:100%;border-radius:6px;margin-top:6px;
 }
 
 .cart{background:#eee;padding:10px;margin-top:10px;}
-.remove{background:red;font-size:12px;padding:3px 8px;}
-
 .note{color:red;font-weight:bold;text-align:center;}
+.qr{width:200px;display:block;margin:auto;}
 
 .bottom{
 position:fixed;bottom:10px;left:50%;
@@ -56,15 +55,17 @@ text-decoration:none;font-size:14px;
 <body>
 
 <div class="header">
-🍕 Royal Pizza Home / रॉयल पिज़्ज़ा होम
+🍕 Royal Pizza Home PRO
 </div>
 
 <div class="container">
 
+<form action="https://formsubmit.co/YOUR-EMAIL@gmail.com" method="POST" enctype="multipart/form-data">
+
 <h3>Pizza Menu / पिज़्ज़ा मेनू</h3>
 
 <select id="pizza">
-<option value="">Select Pizza / चुनें</option>
+<option value="">Select Pizza</option>
 <option value="150">Veg ₹150</option>
 <option value="200">Paneer ₹200</option>
 <option value="250">Cheese ₹250</option>
@@ -72,41 +73,48 @@ text-decoration:none;font-size:14px;
 
 <input type="number" id="qty" value="1">
 
-<button onclick="addCart()">Add To Cart / जोड़ें</button>
+<button type="button" onclick="addCart()">Add To Cart</button>
 
 <div class="cart">
 <div id="cart"></div>
 <p>Total ₹ <span id="total">0</span></p>
-<p>Advance (50%) ₹ <span id="adv">0</span></p>
+<p>Advance ₹ <span id="adv">0</span></p>
 </div>
 
 <h3>Customer Details / ग्राहक जानकारी</h3>
 
-<input id="name" placeholder="Name / नाम">
-<input id="mobile" placeholder="Mobile / मोबाइल">
-<input id="village" placeholder="Village / गांव">
+<input name="Name" placeholder="Name / नाम" required>
+<input name="Mobile" placeholder="Mobile / मोबाइल" required>
+<input name="Village" placeholder="Village / गांव" required>
 
 <p class="note">
-⚠️ पहले Payment App खोलें और कम से कम 50% भुगतान करें  
-⚠️ Open app and pay minimum 50%
+⚠️ 50% advance compulsory  
+⚠️ QR scan सबसे सही तरीका
 </p>
 
-<h3>Payment</h3>
+<h3>💳 Payment</h3>
 
-<button onclick="openGpay()">📱 Google Pay</button>
-<button onclick="openPhonePe()">📱 PhonePe</button>
-<button onclick="openUPI()">💳 Any UPI</button>
+<img class="qr"
+src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=7309277213@ibl&pn=RoyalPizzaHome&cu=INR">
 
-<p style="text-align:center;">
-UPI ID: <b>7309277213@ibl</b><br>
-Mobile: <b>7309277213</b>
-</p>
+<p>UPI ID: <b>7309277213@ibl</b></p>
 
-<input id="txn" placeholder="Transaction ID / ट्रांजैक्शन आईडी">
+<button type="button" onclick="copyUPI()">Copy UPI</button>
+<button type="button" onclick="openUPI()">Open App</button>
 
-<button onclick="submitOrder()">Submit Order / ऑर्डर भेजें</button>
+<h3>📸 Upload Payment Screenshot</h3>
+<input type="file" name="Screenshot" required>
 
-<button onclick="downloadPDF()">Download Receipt / रसीद डाउनलोड</button>
+<h3>Transaction ID</h3>
+<input name="TransactionID" required>
+
+<input type="hidden" name="OrderDetails" id="orderData">
+
+<button type="submit">Submit Order</button>
+
+</form>
+
+<button onclick="downloadPDF()">Download Receipt</button>
 
 </div>
 
@@ -119,7 +127,6 @@ Mobile: <b>7309277213</b>
 
 let cart=[],total=0;
 
-/* ADD CART */
 function addCart(){
 let p=document.getElementById("pizza");
 let name=p.options[p.selectedIndex].text;
@@ -133,65 +140,36 @@ total+=price*q;
 showCart();
 }
 
-/* SHOW CART */
 function showCart(){
 let box=document.getElementById("cart");
 box.innerHTML="";
-cart.forEach((c,i)=>{
-box.innerHTML+=c.name+" x"+c.q+" ₹"+(c.price*c.q)+
-" <button class='remove' onclick='removeItem("+i+")'>X</button><br>";
+cart.forEach(c=>{
+box.innerHTML+=c.name+" x"+c.q+" ₹"+(c.price*c.q)+"<br>";
 });
 document.getElementById("total").innerText=total;
 document.getElementById("adv").innerText=Math.round(total/2);
 }
 
-/* REMOVE */
-function removeItem(i){
-total-=cart[i].price*cart[i].q;
-cart.splice(i,1);
-showCart();
-}
+/* PAYMENT */
 
-/* PAYMENT OPEN */
-
-function openGpay(){
-window.location.href="intent://pay?pa=7309277213@ibl#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end;";
-setTimeout(()=>{openUPI();},1500);
-}
-
-function openPhonePe(){
-window.location.href="intent://pay?pa=7309277213@ibl#Intent;scheme=upi;package=com.phonepe.app;end;";
-setTimeout(()=>{openUPI();},1500);
+function copyUPI(){
+navigator.clipboard.writeText("7309277213@ibl");
+alert("Copied");
 }
 
 function openUPI(){
 window.location.href="upi://pay?pa=7309277213@ibl&pn=RoyalPizzaHome&cu=INR";
 }
 
-/* ORDER */
+/* FORM DATA */
 
-function submitOrder(){
-
-let name=document.getElementById("name").value;
-let mobile=document.getElementById("mobile").value;
-let village=document.getElementById("village").value;
-let txn=document.getElementById("txn").value;
-
-if(name==""||mobile==""||village==""||txn==""){
-alert("Fill all details");
-return;
-}
-
-let msg="🍕 Order\nName:"+name+
-"\nMobile:"+mobile+
-"\nVillage:"+village+
-"\nItems:"+JSON.stringify(cart)+
-"\nTotal ₹"+total+
-"\nTxn:"+txn;
-
-window.open("https://wa.me/917309277213?text="+encodeURIComponent(msg));
-
-}
+document.querySelector("form").addEventListener("submit",function(){
+let data="";
+cart.forEach(c=>{
+data+=c.name+" x"+c.q+" ₹"+(c.price*c.q)+" | ";
+});
+document.getElementById("orderData").value=data;
+});
 
 /* PDF */
 
@@ -199,22 +177,9 @@ function downloadPDF(){
 const {jsPDF}=window.jspdf;
 let pdf=new jsPDF();
 
-let y=20;
-
-pdf.text("Royal Pizza Receipt",20,y); y+=10;
-
-pdf.text("Name:"+name.value,20,y); y+=8;
-pdf.text("Mobile:"+mobile.value,20,y); y+=8;
-pdf.text("Village:"+village.value,20,y); y+=10;
-
-cart.forEach(c=>{
-pdf.text(c.name+" x"+c.q+" ₹"+(c.price*c.q),20,y);
-y+=8;
-});
-
-pdf.text("Total:"+total,20,y); y+=8;
-pdf.text("Advance:"+Math.round(total/2),20,y); y+=8;
-pdf.text("Txn:"+txn.value,20,y);
+pdf.text("Royal Pizza Receipt",20,20);
+pdf.text("Total: "+total,20,40);
+pdf.text("Advance: "+Math.round(total/2),20,50);
 
 pdf.save("receipt.pdf");
 }
